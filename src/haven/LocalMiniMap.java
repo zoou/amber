@@ -147,11 +147,11 @@ public class LocalMiniMap extends Widget {
     }
 
     public Coord p2c(Coord2d pc) {
-        return (pc.floor(tilesz2).sub(cc).add(sz.div(2)));
+        return (pc.floor(tilesz).sub(cc).add(sz.div(2)));
     }
 
     public Coord2d c2p(Coord c) {
-        return (c.sub(sz.div(2)).add(cc).mul(tilesz2).add(tilesz2.div(2)));
+        return (c.sub(sz.div(2)).add(cc).mul(tilesz).add(tilesz.div(2)));
     }
 
     public void drawicons(GOut g) {
@@ -447,9 +447,9 @@ public class LocalMiniMap extends Widget {
     public void tick(double dt) {
         Gob pl = ui.sess.glob.oc.getgob(mv.plgob);
         if(pl == null)
-            this.cc = mv.cc.floor(tilesz2);
+            this.cc = mv.cc.floor(tilesz);
         else
-            this.cc = pl.rc.floor(tilesz2);
+            this.cc = pl.rc.floor(tilesz);
 
         if (Config.playerposfile != null && MapGridSave.gul != null) {
             try {

@@ -529,7 +529,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public void draw(GOut g) {}
 
         public Object staticp() {
-            Coord cc = MapView.this.cc.floor(tilesz2).div(MCache.cutsz);
+            Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
             int mseq = glob.map.olseq;
             if(loading || !Utils.eq(cc, this.cc) || (mseq != this.mseq)) {
                 loading = false;
@@ -563,14 +563,14 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public boolean setup(RenderList rl) {
-            Coord cc = MapView.this.cc.floor(tilesz2).div(MCache.cutsz);
+            Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
             Coord o = new Coord();
             for (o.y = -view; o.y <= view; o.y++) {
                 for (o.x = -view; o.x <= view; o.x++) {
-                    Coord pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
+                    Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
                     try {
                         MapMesh cut = glob.map.getcut(cc.add(o));
-                        rl.add(cut, Location.xlate(new Coord3f(pc.x, -pc.y, 0)));
+                        rl.add(cut, Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)));
                     } catch (Defer.DeferredException e) {
                         // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
                         // we ignore Defer.DeferredException to prevent the client for crashing
@@ -609,11 +609,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public boolean setup(RenderList rl) {
-            Coord cc = MapView.this.cc.floor(tilesz2).div(MCache.cutsz);
+            Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
             Coord o = new Coord();
             for (o.y = -view; o.y <= view; o.y++) {
                 for (o.x = -view; o.x <= view; o.x++) {
-                    Coord pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
+                    Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
                     for (int i = 0; i < visol.length; i++) {
                         if (mats[i] == null)
                             continue;
@@ -621,7 +621,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             Rendered olcut;
                             olcut = glob.map.getolcut(i, cc.add(o));
                             if (olcut != null)
-                                rl.add(olcut, GLState.compose(Location.xlate(new Coord3f(pc.x, -pc.y, 0)), mats[i]));
+                                rl.add(olcut, GLState.compose(Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)), mats[i]));
                         }
                     }
                 }
@@ -652,7 +652,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             xf = gob.loc;
             try {
                 Coord3f c = gob.getc();
-                Tiler tile = glob.map.tiler(glob.map.gettile(new Coord(c).div(tilesz)));
+                Tiler tile = glob.map.tiler(glob.map.gettile(new Coord2d(c).floor(tilesz)));
                 extra = tile.drawstate(glob, rl.cfg, c);
             } catch (Loading e) {
                 extra = null;
@@ -1170,7 +1170,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         if (col.getBlue() != 0)
                             pixel = null;
                         else
-                            pixel = new Coord2d((col.getRed() * tilesz2.x) / 255.0, (col.getGreen() * tilesz2.y) / 255.0);
+                            pixel = new Coord2d((col.getRed() * tilesz.x) / 255.0, (col.getGreen() * tilesz.y) / 255.0);
                         ckdone(4);
                     }
                 });
@@ -1182,7 +1182,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         if ((cut == null) || !tile.isect(Coord.z, cut.sz))
                             cb.done(null);
                         else
-                            cb.done(cut.ul.add(tile).mul(tilesz2).add(pixel));
+                            cb.done(cut.ul.add(tile).mul(tilesz).add(pixel));
                     }
                 }
             }
@@ -1366,15 +1366,15 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             poldraw(g);
             partydraw(g);
             try {
-                glob.map.reqarea(cc.floor(tilesz2).sub(MCache.cutsz.mul(view + 1)),
-                        cc.floor(tilesz2).add(MCache.cutsz.mul(view + 1)));
+                glob.map.reqarea(cc.floor(tilesz).sub(MCache.cutsz.mul(view + 1)),
+                        cc.floor(tilesz).add(MCache.cutsz.mul(view + 1)));
             } catch (Defer.DeferredException e) {
                 // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
                 // we ignore Defer.DeferredException to prevent the client for crashing
             }
             // change grid overlay position when player moves by 20 tiles
             if (showgrid) {
-                Coord2d tc = cc.div(MCache.tilesz2);
+                Coord2d tc = cc.div(MCache.tilesz);
                 if (tc.manhattan2(lasttc) > 20) {
                     lasttc = tc;
                     gridol.update(tc.sub(new Coord2d(MCache.cutsz.mul(view + 1))));
@@ -1428,7 +1428,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
         public void adjust(Plob plob, Coord pc, Coord2d mc, int modflags) {
             if ((modflags & 2) == 0)
-                plob.rc = mc.floor(tilesz2).mul(tilesz2).add(tilesz2.div(2));
+                plob.rc = mc.floor(tilesz).mul(tilesz).add(tilesz.div(2));
             else
                 plob.rc = mc;
             Gob pl = plob.mv().player();
@@ -1917,7 +1917,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         delay(new Hittest(cc) {
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 if (Config.nodropping && !ui.modctrl) {
-                    int t = glob.map.gettile(player().rc.floor(posres).div(tilesz));
+                    int t = glob.map.gettile(player().rc.floor(posres).div(tilesz2));
                     Resource res = glob.map.tilesetr(t);
                     if (res != null && (res.name.equals("gfx/tiles/water") || res.name.equals("gfx/tiles/deep")))
                         return;
@@ -2085,7 +2085,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     ol.destroy();
                     mgrab.remove();
                 }
-                sc = mc.div(tilesz);
+                sc = mc.div(MCache.tilesz2);
                 modflags = ui.modflags();
                 xl.mv = true;
                 mgrab = ui.grabmouse(MapView.this);
@@ -2099,7 +2099,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public boolean mmouseup(Coord mc, int button) {
             synchronized (MapView.this) {
                 if (sc != null) {
-                    Coord ec = mc.div(tilesz);
+                    Coord ec = mc.div(MCache.tilesz2);
                     xl.mv = false;
                     tt = null;
                     ol.destroy();
@@ -2127,7 +2127,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public void mmousemove(Coord mc) {
             synchronized (MapView.this) {
                 if (sc != null) {
-                    Coord tc = mc.div(MCache.tilesz);
+                    Coord tc = mc.div(MCache.tilesz2);
                     Coord c1 = new Coord(Math.min(tc.x, sc.x), Math.min(tc.y, sc.y));
                     Coord c2 = new Coord(Math.max(tc.x, sc.x), Math.max(tc.y, sc.y));
                     ol.update(c1, c2);
@@ -2220,7 +2220,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void togglegrid() {
         showgrid = !showgrid;
         if (showgrid) {
-            Coord2d tc = new Coord2d(cc.floor(posres).div(MCache.tilesz));
+            Coord2d tc = new Coord2d(cc.floor(posres).div(MCache.tilesz2));
             lasttc = tc.div(100, 100);
             gridol.update(tc.sub(new Coord2d(MCache.cutsz.mul(view + 1))));
         }
