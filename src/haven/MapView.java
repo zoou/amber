@@ -1666,8 +1666,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             Resource curs = ui.root.getcurs(c);
             if (inf == null) {
                 if (Config.tilecenter && clickb == 3) {
-                    mc.x = mc.x / 11 * 11 + 5;
-                    mc.y = mc.y / 11 * 11 + 5;
+                    mc.x = (int) mc.x / 11 * 11 + 5;
+                    mc.y = (int) mc.y / 11 * 11 + 5;
                 }
 
                 if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
@@ -1939,8 +1939,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 if (inf == null) {
                     if (Config.tilecenter) {
-                        mc.x = mc.x / 11 * 11 + 5;
-                        mc.y = mc.y / 11 * 11 + 5;
+                        mc.x = (int) mc.x / 11 * 11 + 5;
+                        mc.y = (int) mc.y / 11 * 11 + 5;
                     }
                     wdgmsg("itemact", pc, mc.floor(posres), ui.modflags());
                 } else {
@@ -2220,7 +2220,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void togglegrid() {
         showgrid = !showgrid;
         if (showgrid) {
-            Coord2d tc = new Coord2d(cc.floor(posres).div(MCache.tilesz2));
+            Coord2d tc = cc.div(MCache.tilesz);
             lasttc = tc.div(100, 100);
             gridol.update(tc.sub(new Coord2d(MCache.cutsz.mul(view + 1))));
         }

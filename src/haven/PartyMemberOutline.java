@@ -68,13 +68,13 @@ public class PartyMemberOutline extends Sprite {
 
     private void setz(Glob glob, Coord2d c) {
         FloatBuffer posa = this.posa.data;
-       /* try {
-            float z = glob.map.getcz(c.x, c.y);
+        try {
+            double z = glob.map.getcz(c);
             for (int j = 0; j < this.posa.size(); j++) {
-                float tz = glob.map.getcz(c.x + posa.get(j * 3), c.y - posa.get(j * 3 + 1)) - z;
+                float tz = (float)(glob.map.getcz(c.x + posa.get(j * 3), c.y - posa.get(j * 3 + 1)) - z);
                 posa.put(j * 3 + 2, tz + 0.1f);
             }
         } catch (Loading e) {
-        }*/
+        }
     }
 }
