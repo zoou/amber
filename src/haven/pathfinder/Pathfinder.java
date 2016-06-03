@@ -63,7 +63,7 @@ public class Pathfinder implements Runnable {
     public void run() {
         do {
             moveinterupted = false;
-            pathfind(mv.player().rc);
+          //  pathfind(mv.player().rc);
         } while (moveinterupted && !terminate);
 
         notifyListeners();

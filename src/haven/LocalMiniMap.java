@@ -32,7 +32,8 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 import java.util.List;
-
+import static haven.MCache.tilesz2;
+import static haven.OCache.posres;
 import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
@@ -145,12 +146,12 @@ public class LocalMiniMap extends Widget {
         this.mv = mv;
     }
 
-    public Coord p2c(Coord pc) {
-        return (pc.div(tilesz).sub(cc).add(sz.div(2)));
+    public Coord p2c(Coord2d pc) {
+        return (pc.floor(tilesz2).sub(cc).add(sz.div(2)));
     }
 
-    public Coord c2p(Coord c) {
-        return (c.sub(sz.div(2)).add(cc).mul(tilesz).add(tilesz.div(2)));
+    public Coord2d c2p(Coord c) {
+        return (c.sub(sz.div(2)).add(cc).mul(tilesz2).add(tilesz2.div(2)));
     }
 
     public void drawicons(GOut g) {
@@ -446,14 +447,14 @@ public class LocalMiniMap extends Widget {
     public void tick(double dt) {
         Gob pl = ui.sess.glob.oc.getgob(mv.plgob);
         if(pl == null)
-            this.cc = mv.cc.div(tilesz);
+            this.cc = mv.cc.floor(tilesz2);
         else
-            this.cc = pl.rc.div(tilesz);
+            this.cc = pl.rc.floor(tilesz2);
 
         if (Config.playerposfile != null && MapGridSave.gul != null) {
             try {
                 // instead of synchronizing MapGridSave.gul we just handle NPE
-                plcrel = pl.rc.sub((MapGridSave.gul.x + 50) * tilesz.x, (MapGridSave.gul.y + 50) * tilesz.y);
+             //   plcrel = pl.rc.sub((MapGridSave.gul.x + 50) * tilesz.x, (MapGridSave.gul.y + 50) * tilesz.y);
             } catch (NullPointerException npe) {
             }
         }
@@ -548,14 +549,15 @@ public class LocalMiniMap extends Widget {
         synchronized (ui.sess.glob.party.memb) {
             Collection<Party.Member> members = ui.sess.glob.party.memb.values();
             for (Party.Member m : members) {
+                Coord2d ppc;
                 Coord ptc;
                 double angle;
                 try {
-                    ptc = m.getc();
-                    if (ptc == null) // chars are located in different worlds
+                    ppc = m.getc();
+                    if (ppc == null) // chars are located in different worlds
                         continue;
 
-                    ptc = p2c(ptc).add(delta);
+                    ptc = p2c(ppc).add(delta);
                     Gob gob = m.getgob();
                     // draw 'x' if gob is outside of view range
                     if (gob == null) {
@@ -597,9 +599,9 @@ public class LocalMiniMap extends Widget {
                     return false;
                 Gob gob = findicongob(c.sub(delta));
                 if (gob == null)
-                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), button, ui.modflags());
+                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)).floor(posres), button, ui.modflags());
                 else
-                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), button, ui.modflags(), 0, (int) gob.id, gob.rc, 0, -1);
+                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)).floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             } else if (button == 2 && !Config.maplocked) {
                 doff = c;
                 dragging = ui.grabmouse(this);
@@ -610,9 +612,9 @@ public class LocalMiniMap extends Widget {
                     return false;
                 Gob gob = findicongob(c.sub(delta));
                 if (gob == null)
-                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), 1, ui.modflags());
+                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)).floor(posres), 1, ui.modflags());
                 else
-                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)), button, ui.modflags(), 0, (int) gob.id, gob.rc, 0, -1);
+                    mv.wdgmsg("click", rootpos().add(c.sub(delta)), c2p(c.sub(delta)).floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             } else if (button == 1 && !Config.maplocked) {
                 doff = c;
                 dragging = ui.grabmouse(this);

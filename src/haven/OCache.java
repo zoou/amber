@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.List;
 
 public class OCache implements Iterable<Gob> {
+    public static final Coord2d posres = new Coord2d(1.0, 1.0);
     /* XXX: Use weak refs */
     private Collection<Collection<Gob>> local = new LinkedList<Collection<Gob>>();
     private Map<Long, Gob> objs = new TreeMap<Long, Gob>();
@@ -144,7 +145,7 @@ public class OCache implements Iterable<Gob> {
             if (r) {
                 return (null);
             } else {
-                Gob g = new Gob(glob, Coord.z, id, frame);
+                Gob g = new Gob(glob, Coord2d.z, id, frame);
                 objs.put(id, g);
                 return (g);
             }
@@ -161,7 +162,7 @@ public class OCache implements Iterable<Gob> {
     private long nextvirt = -1;
 
     public class Virtual extends Gob {
-        public Virtual(Coord c, double a) {
+        public Virtual(Coord2d c, double a) {
             super(OCache.this.glob, c, nextvirt--, 0);
             this.a = a;
             virtual = true;
@@ -172,7 +173,7 @@ public class OCache implements Iterable<Gob> {
         }
     }
 
-    public synchronized void move(Gob g, Coord c, double a) {
+    public synchronized void move(Gob g, Coord2d c, double a) {
         g.move(c, a);
         changed(g);
     }
@@ -190,7 +191,7 @@ public class OCache implements Iterable<Gob> {
         changed(g);
     }
 
-    public synchronized void linbeg(Gob g, Coord s, Coord t, int c) {
+    public synchronized void linbeg(Gob g, Coord2d s, Coord2d t, int c) {
         LinMove lm = new LinMove(g, s, t, c);
         g.setattr(lm);
         if (pf != null && g.isplayer())
@@ -319,12 +320,12 @@ public class OCache implements Iterable<Gob> {
         changed(g);
     }
 
-    public synchronized void homing(Gob g, long oid, Coord tc, int v) {
+    public synchronized void homing(Gob g, long oid, Coord2d tc, int v) {
         g.setattr(new Homing(g, oid, tc, v));
         changed(g);
     }
 
-    public synchronized void homocoord(Gob g, Coord tc, int v) {
+    public synchronized void homocoord(Gob g, Coord2d tc, int v) {
         Homing homo = g.getattr(Homing.class);
         if (homo != null) {
             homo.tc = tc;

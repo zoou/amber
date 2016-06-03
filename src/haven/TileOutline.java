@@ -3,6 +3,7 @@ package haven;
 import javax.media.opengl.GL2;
 import java.nio.BufferOverflowException;
 import java.nio.FloatBuffer;
+import static haven.OCache.posres;
 
 public class TileOutline implements Rendered {
     private final MCache map;
@@ -11,7 +12,7 @@ public class TileOutline implements Rendered {
     private final Coord size;
     private final States.ColState color;
     private Location location;
-    private Coord ul;
+    private Coord2d ul;
     private int curIndex;
 
     public TileOutline(MCache map, Coord size) {
@@ -49,12 +50,12 @@ public class TileOutline implements Rendered {
         return true;
     }
 
-    public void update(Coord ul) {
+    public void update(Coord2d ul) {
         try {
             this.ul = ul;
-            this.location = Location.xlate(new Coord3f(ul.x * MCache.tilesz.x, -ul.y * MCache.tilesz.y, 0.0F));
+            this.location = Location.xlate(new Coord3f((float)ul.x * MCache.tilesz.x, (float)-ul.y * MCache.tilesz.y, 0.0F));
             swapBuffers();
-            Coord c = new Coord();
+            Coord2d c = new Coord2d();
             for (c.y = ul.y; c.y <= ul.y + size.y; c.y++)
                 for (c.x = ul.x; c.x <= ul.x + size.x; c.x++)
                     addLineStrip(mapToScreen(c), mapToScreen(c.add(1, 0)), mapToScreen(c.add(1, 1)));
@@ -62,8 +63,8 @@ public class TileOutline implements Rendered {
         }
     }
 
-    private Coord3f mapToScreen(Coord c) {
-        return new Coord3f((c.x - ul.x) * MCache.tilesz.x, -(c.y - ul.y) * MCache.tilesz.y, map.getz(c));
+    private Coord3f mapToScreen(Coord2d c) {
+        return new Coord3f((float)(c.x - ul.x) * MCache.tilesz.x, (float)-(c.y - ul.y) * MCache.tilesz.y, map.getz(c.floor(posres)));
     }
 
     private void addLineStrip(Coord3f... vertices) {

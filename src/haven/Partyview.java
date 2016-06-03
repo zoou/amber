@@ -74,7 +74,7 @@ public class Partyview extends Widget {
                             if (gob == null) {
                                 if (gameui().map == null || gameui().map.player() == null)
                                     return tooltip;
-                                Coord a = gameui().map.player().rc;
+                                /*Coord a = gameui().map.player().rc;
                                 Coord b = m.getc();
                                 if (b == null)
                                     return tooltip;
@@ -90,7 +90,7 @@ public class Partyview extends Widget {
                                         df.format(dist),
                                         df.format(a.x > b.x ? -1 * dxabs: dxabs),
                                         df.format(a.y > b.y ? dyabs : -1 * dyabs));
-                                tooltip = Text.render(tooltipstr).tex();
+                                tooltip = Text.render(tooltipstr).tex();*/
 
                                 return tooltip;
                             }

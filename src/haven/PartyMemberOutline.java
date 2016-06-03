@@ -11,7 +11,7 @@ public class PartyMemberOutline extends Sprite {
     private final VertexBuf.VertexArray posa;
     private final VertexBuf.NormalArray nrma;
     private final ShortBuffer eidx;
-    private Coord lc;
+    private Coord2d lc;
 
 
     protected PartyMemberOutline(Owner owner, Color color) {
@@ -58,7 +58,7 @@ public class PartyMemberOutline extends Sprite {
 
     @Override
     public boolean tick(int dt) {
-        Coord c = ((Gob) this.owner).rc;
+        Coord2d c = ((Gob) this.owner).rc;
         if ((this.lc == null) || (!this.lc.equals(c))) {
             setz(this.owner.glob(), c);
             this.lc = c;
@@ -66,15 +66,15 @@ public class PartyMemberOutline extends Sprite {
         return false;
     }
 
-    private void setz(Glob glob, Coord c) {
+    private void setz(Glob glob, Coord2d c) {
         FloatBuffer posa = this.posa.data;
-        try {
+       /* try {
             float z = glob.map.getcz(c.x, c.y);
             for (int j = 0; j < this.posa.size(); j++) {
                 float tz = glob.map.getcz(c.x + posa.get(j * 3), c.y - posa.get(j * 3 + 1)) - z;
                 posa.put(j * 3 + 2, tz + 0.1f);
             }
         } catch (Loading e) {
-        }
+        }*/
     }
 }
