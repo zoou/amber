@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.List;
 
 public class OCache implements Iterable<Gob> {
-    public static final Coord2d posres = new Coord2d(1.0, 1.0);
+    public static final Coord2d posres = new Coord2d(0x1.0p-10, 0x1.0p-10).mul(11, 11);
     /* XXX: Use weak refs */
     private Collection<Collection<Gob>> local = new LinkedList<Collection<Gob>>();
     private Map<Long, Gob> objs = new TreeMap<Long, Gob>();
