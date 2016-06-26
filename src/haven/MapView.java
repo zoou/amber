@@ -1665,9 +1665,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
             Resource curs = ui.root.getcurs(c);
             if (inf == null) {
-                if (Config.tilecenter && clickb == 3) {
-                    mc.x = (int) mc.x / 11 * 11 + 5;
-                    mc.y = (int) mc.y / 11 * 11 + 5;
+                if (Config.tilecenter && clickb == 1) {
+                    mc.x = ((int) mc.x / 11 - 1) * 11 + 5;
+                    mc.y = ((int) mc.y / 11 - 1) * 11 + 5;
                 }
 
                 if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
@@ -1919,7 +1919,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         delay(new Hittest(cc) {
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 if (Config.nodropping && !ui.modctrl) {
-                    int t = glob.map.gettile(player().rc.floor(posres).div(tilesz2));
+                    int t = glob.map.gettile(player().rc.floor(tilesz));
                     Resource res = glob.map.tilesetr(t);
                     if (res != null && (res.name.equals("gfx/tiles/water") || res.name.equals("gfx/tiles/deep")))
                         return;
@@ -1941,8 +1941,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 if (inf == null) {
                     if (Config.tilecenter) {
-                        mc.x = (int) mc.x / 11 * 11 + 5;
-                        mc.y = (int) mc.y / 11 * 11 + 5;
+                        mc.x = ((int) mc.x / 11 - 1) * 11 + 5;
+                        mc.y = ((int) mc.y / 11 - 1) * 11 + 5;
                     }
                     wdgmsg("itemact", pc, mc.floor(posres), ui.modflags());
                 } else {

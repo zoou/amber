@@ -3,6 +3,9 @@ package haven;
 import javax.media.opengl.GL2;
 import java.nio.BufferOverflowException;
 import java.nio.FloatBuffer;
+
+import static haven.MCache.tilesz;
+import static haven.MCache.tilesz2;
 import static haven.OCache.posres;
 
 public class TileOutline implements Rendered {
@@ -53,7 +56,7 @@ public class TileOutline implements Rendered {
     public void update(Coord2d ul) {
         try {
             this.ul = ul;
-            this.location = Location.xlate(new Coord3f((float)ul.x * MCache.tilesz2.x, (float)-ul.y * MCache.tilesz2.y, 0.0F));
+            this.location = Location.xlate(new Coord3f((float)ul.x * tilesz2.x, (float)-ul.y * tilesz2.y, 0.0F));
             swapBuffers();
             Coord2d c = new Coord2d();
             for (c.y = ul.y; c.y <= ul.y + size.y; c.y++)
@@ -64,7 +67,7 @@ public class TileOutline implements Rendered {
     }
 
     private Coord3f mapToScreen(Coord2d c) {
-        return new Coord3f((float)(c.x - ul.x) * MCache.tilesz2.x, (float)-(c.y - ul.y) * MCache.tilesz2.y, map.getz(c.floor(posres)));
+        return new Coord3f((float)(c.x - ul.x) * tilesz2.x, (float)-(c.y - ul.y) * tilesz2.y, map.getz(c.round()));
     }
 
     private void addLineStrip(Coord3f... vertices) {
