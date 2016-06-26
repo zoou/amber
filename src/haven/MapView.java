@@ -2252,9 +2252,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
             if (gobcls != null) {
                 gameui().menu.wdgmsg("act", new Object[]{"aggro"});
-                wdgmsg("click", gobcls.sc, Coord.z, 1, ui.modflags(), 0, (int) gobcls.id, gobcls.rc, 0, 0);
+                wdgmsg("click", gobcls.sc, Coord.z, 1, ui.modflags(), 0, (int) gobcls.id, gobcls.rc.floor(posres), 0, 0);
                 Gob pl = player();
-                wdgmsg("click", pl.sc, pl.rc, 3, 0);
+                wdgmsg("click", pl.sc, pl.rc.floor(posres), 3, 0);
             }
         }
     }

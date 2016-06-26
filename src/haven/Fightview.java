@@ -28,6 +28,8 @@ package haven;
 
 import java.util.*;
 
+import static haven.OCache.posres;
+
 public class Fightview extends Widget {
     static Tex bg = Resource.loadtex("gfx/hud/bosq");
     static int height = 5;
@@ -209,9 +211,9 @@ public class Fightview extends Widget {
                             if (gob.id == nxtid) {
                                 GameUI gui = gameui();
                                 gui.menu.wdgmsg("act", new Object[]{"aggro"});
-                                gui.map.wdgmsg("click", gob.sc, Coord.z, 1, 0, 0, (int) gob.id, gob.rc, 0, 0);
+                                gui.map.wdgmsg("click", gob.sc, Coord.z, 1, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, 0);
                                 Gob pl = gui.map.player();
-                                gui.map.wdgmsg("click", pl.sc, pl.rc, 3, 0);
+                                gui.map.wdgmsg("click", pl.sc, pl.rc.floor(posres), 3, 0);
                                 return;
                             }
                         }
