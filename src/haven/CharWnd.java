@@ -26,21 +26,20 @@
 
 package haven;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.font.TextAttribute;
 import java.util.*;
+import java.util.List;
 
-import static haven.Window.wbox;
 import static haven.PUtils.*;
 
 import haven.resutil.FoodInfo;
 
 public class CharWnd extends Window {
-    public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, 9).aa(true);
+    public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, Config.fontsizeglobal).aa(true);
     public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.sans, 20).aa(true), Window.ctex), 2, 2, new Color(96, 48, 0));
-    public static final Text.Foundry attrf = new Text.Foundry(Text.sansb, Resource.language.equals("en") ? 14 : 12).aa(true);
+    public static final Text.Foundry attrf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), Config.fontsizeattr).aa(true);
+    public static final Text.Foundry numfnd = new Text.Foundry(Text.sans, 12);
     public static final Color debuff = new Color(255, 128, 128);
     public static final Color buff = new Color(128, 255, 128);
     public static final Color tbuff = new Color(128, 128, 255);
@@ -84,7 +83,7 @@ public class CharWnd extends Window {
                 int ver = buf.uint8();
                 if (ver == 1) {
                     col = new Color(buf.uint8(), buf.uint8(), buf.uint8(), buf.uint8());
-                    nm = Resource.getLocString(Resource.l10nTooltip, res.name, buf.string());
+                    nm = Resource.getLocString(Resource.BUNDLE_TOOLTIP, res, buf.string());
                     sort = buf.int16();
                 } else {
                     throw (new Resource.LoadException("unknown foodev version: " + ver, res));
@@ -174,7 +173,7 @@ public class CharWnd extends Window {
                     Collections.sort(etr, dcmp);
                     GameUI gui = getparent(GameUI.class);
                     if (gui != null)
-                        gui.msg(String.format(Resource.getLocString(Resource.l10nLabel, "You gained ") + Loading.waitfor(trev).layer(Event.class).nm), Color.WHITE);
+                        gui.msg(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "You gained ") + Loading.waitfor(trev).layer(Event.class).nm), Color.WHITE);
                     trol = new TexI(mktrol(etr, trev));
                     trtm = System.currentTimeMillis();
                     trev = null;
@@ -235,7 +234,7 @@ public class CharWnd extends Window {
                     cur = ItemInfo.catimgs(0, cur, ln);
                     sum += el.a;
                 }
-                cur = ItemInfo.catimgs(0, cur, Text.render(String.format(Resource.getLocString(Resource.l10nLabel, "Total: %s/%s"), Utils.odformat2(sum, 2), Utils.odformat(cap, 2))).img);
+                cur = ItemInfo.catimgs(0, cur, Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Total: %s/%s"), Utils.odformat2(sum, 2), Utils.odformat(cap, 2))).img);
                 rtip = new TexI(cur);
             }
             return (rtip);
@@ -268,7 +267,7 @@ public class CharWnd extends Window {
             this.glut = ((Number) args[a++]).doubleValue();
             this.lglut = ((Number) args[a++]).doubleValue();
             this.gmod = ((Number) args[a++]).doubleValue();
-            this.lbl = Resource.getLocString(Resource.l10nLabel, (String) args[a++]);
+            this.lbl = Resource.getLocString(Resource.BUNDLE_LABEL, (String) args[a++]);
             this.bg = (Color) args[a++];
             this.fg = (Color) args[a++];
             rtip = null;
@@ -279,7 +278,7 @@ public class CharWnd extends Window {
         public Object tooltip(Coord c, Widget prev) {
             if (rtip == null) {
                 rtip = RichText.render(String.format(
-                        Resource.getLocString(Resource.l10nLabel, "%s: %d%%\nFood efficacy: %d%%"), lbl, Math.round((lglut) * 100), Math.round(gmod * 100)), -1).tex();
+                        Resource.getLocString(Resource.BUNDLE_LABEL, "%s: %d%%\nFood efficacy: %d%%"), lbl, Math.round((lglut) * 100), Math.round(gmod * 100)), -1).tex();
             }
             return (rtip);
         }
@@ -596,7 +595,7 @@ public class CharWnd extends Window {
         private Coord oc;
 
         public RLabel(Coord oc, String text) {
-            super(text);
+            super(text, numfnd);
             this.oc = oc;
         }
 
@@ -643,7 +642,7 @@ public class CharWnd extends Window {
     public class StudyInfo extends Widget {
         public Widget study;
         public int texp, tw, tenc, tlph;
-        private final Text.UText<?> texpt = new Text.UText<Integer>(Text.std) {
+        private final Text.UText<?> texpt = new Text.UText<Integer>(numfnd) {
             public Integer value() {
                 return (texp);
             }
@@ -652,12 +651,12 @@ public class CharWnd extends Window {
                 return (Utils.thformat(v));
             }
         };
-        private final Text.UText<?> twt = new Text.UText<String>(Text.std) {
+        private final Text.UText<?> twt = new Text.UText<String>(numfnd) {
             public String value() {
                 return (tw + "/" + ui.sess.glob.cattr.get("int").comp);
             }
         };
-        private final Text.UText<?> tenct = new Text.UText<Integer>(Text.std) {
+        private final Text.UText<?> tenct = new Text.UText<Integer>(numfnd) {
             public Integer value() {
                 return (tenc);
             }
@@ -666,7 +665,7 @@ public class CharWnd extends Window {
                 return (Integer.toString(tenc));
             }
         };
-        private final Text.UText<?> tlpht = new Text.UText<Integer>(Text.std) {
+        private final Text.UText<?> tlpht = new Text.UText<Integer>(numfnd) {
             public Integer value() {
                 return (tlph);
             }
@@ -786,7 +785,7 @@ public class CharWnd extends Window {
             Resource res = this.res.get();
             buf.append("$img[" + res.name + "]\n\n");
             buf.append("$b{$font[serif,16]{" + res.layer(Resource.tooltip).t + "}}\n\n\n");
-            buf.append(Resource.getLocString(Resource.l10nLabel, "Cost: ") + cost + "\n\n");
+            buf.append(Resource.getLocString(Resource.BUNDLE_LABEL, "Cost: ") + cost + "\n\n");
             buf.append(res.layer(Resource.pagina).text);
             return (buf.toString());
         }
@@ -819,7 +818,7 @@ public class CharWnd extends Window {
             buf.append("$img[" + res.name + "]\n\n");
             buf.append("$b{$font[serif,16]{" + res.layer(Resource.tooltip).t + "}}\n\n\n");
             if (score > 0)
-                buf.append(Resource.getLocString(Resource.l10nLabel, "Experience points: ") + Utils.thformat(score) + "\n\n");
+                buf.append(Resource.getLocString(Resource.BUNDLE_LABEL, "Experience points: ") + Utils.thformat(score) + "\n\n");
             buf.append(res.layer(Resource.pagina).text);
             return (buf.toString());
         }
@@ -929,17 +928,9 @@ public class CharWnd extends Window {
             public String status;
 
             public Condition(String desc, boolean done, String status) {
-                if (!Resource.language.equals("en"))
-                    this.desc = Resource.getLocString(Resource.l10nLabel, desc);
-                else
-                    this.desc = desc;
-
+                this.desc = Resource.getLocString(Resource.BUNDLE_LABEL, desc);
                 this.done = done;
-
-                if (!Resource.language.equals("en") && status != null)
-                    this.status = Resource.getLocString(Resource.l10nLabel, status);
-                else
-                    this.status = status;
+                this.status = Resource.getLocString(Resource.BUNDLE_LABEL, status);
             }
         }
 
@@ -1101,7 +1092,7 @@ public class CharWnd extends Window {
             }
 
             static final Text.Furnace qtfnd = new BlurFurn(new Text.Foundry(Text.serif.deriveFont(java.awt.Font.BOLD, 16)).aa(true), 2, 1, Color.BLACK);
-            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, 12).aa(true);
+            static final Text.Foundry qcfnd = new Text.Foundry(Text.sans, Config.fontsizeglobal * 14 / 11).aa(true);
 
             class QView extends Widget {
                 private Condition[] ccond;
@@ -1580,7 +1571,7 @@ public class CharWnd extends Window {
             int x = 5, y = 0;
 
             battr = tabs.add();
-            battr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Base Attributes")).tex()), new Coord(x - 2, y));
+            battr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Base Attributes")).tex()), new Coord(x - 2, y));
             y += 35;
             base = new ArrayList<Attr>();
             Attr aw;
@@ -1602,28 +1593,28 @@ public class CharWnd extends Window {
             y += aw.sz.y;
             Frame.around(battr, base);
             y += 24;
-            battr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Food Event Points")).tex()), new Coord(x - 2, y));
+            battr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Food Event Points")).tex()), new Coord(x - 2, y));
             y += 35;
             feps = battr.add(new FoodMeter(), new Coord(x, y));
 
             x = 260;
             y = 0;
-            battr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Food Satiations")).tex()), new Coord(x - 2, y));
+            battr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Food Satiations")).tex()), new Coord(x - 2, y));
             y += 35;
             cons = battr.add(new Constipations(attrw, base.size()), wbox.btloff().add(x, y));
             y += cons.sz.y;
             Frame.around(battr, Collections.singletonList(cons));
             y += 24;
-            battr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Hunger Level")).tex()), new Coord(x - 2, y));
+            battr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Hunger Level")).tex()), new Coord(x - 2, y));
             y += 35;
             glut = battr.add(new GlutMeter(), new Coord(x, y));
         }
 
         {
-            int x = 5, y = 0;
+            int x = 0, y = 0;
 
             sattr = tabs.addStudy();
-            sattr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Abilities")).tex()), new Coord(x - 2, y));
+            sattr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Abilities")).tex()), new Coord(x - 2, y));
             y += 35;
             skill = new ArrayList<SAttr>();
             SAttr aw;
@@ -1651,13 +1642,13 @@ public class CharWnd extends Window {
             y += aw.sz.y;
             Frame.around(sattr, skill);
 
-            x = 260;
+            x = 255;
             y = 0;
-            sattr.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Study Report")).tex()), new Coord(x - 2, y));
+            sattr.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Study Report")).tex()), new Coord(x - 2, y));
             y += 35;
             y += 151;
-            int rx = x + attrw - 10;
-            Frame.around(sattr, Area.sized(new Coord(x, y).add(wbox.btloff()), new Coord(attrw, 80)));
+            int rx = x + attrw + 15;
+            Frame.around(sattr, Area.sized(new Coord(x, y).add(wbox.btloff()), new Coord(attrw + 20, 85)));
             sattr.add(new Label("Experience points:"), new Coord(x + 15, y + 10));
             sattr.add(new EncLabel(new Coord(rx, y + 10)));
             sattr.add(new Label("Learning points:"), new Coord(x + 15, y + 25));
@@ -1685,31 +1676,31 @@ public class CharWnd extends Window {
                     }
                     CharWnd.this.wdgmsg("sattr", args.toArray(new Object[0]));
                 }
-            }, new Coord(rx - 75, y + 55));
+            }, new Coord(rx - 75, y + 60));
             sattr.add(new Button(75, "Reset") {
                 public void click() {
                     for (SAttr attr : skill)
                         attr.reset();
                 }
-            }, new Coord(rx - 160, y + 55));
+            }, new Coord(rx - 165, y + 60));
         }
 
         Tabs.Tab skills;
         {
-            int x = 5, y = 0;
+            int x = 0, y = 0;
 
             skills = tabs.add();
-            skills.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Lore & Skills")).tex()), new Coord(x - 2, y));
+            skills.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Lore & Skills")).tex()), new Coord(x - 2, y));
             y += 35;
-            final LoadingTextBox info = skills.add(new LoadingTextBox(new Coord(attrw, 260), "", ifnd), new Coord(x, y).add(wbox.btloff()));
+            final LoadingTextBox info = skills.add(new LoadingTextBox(new Coord(attrw + 10, 260), "", ifnd), new Coord(x, y).add(wbox.btloff()));
             info.bg = new Color(0, 0, 0, 128);
             Frame.around(skills, Collections.singletonList(info));
 
-            x = 260;
+            x = 265;
             y = 0;
-            skills.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Entries")).tex()), new Coord(x - 2, y));
+            skills.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Entries")).tex()), new Coord(x - 2, y));
             y += 35;
-            Tabs lists = new Tabs(new Coord(x, y), new Coord(attrw + wbox.bisz().x, 0), skills);
+            Tabs lists = new Tabs(new Coord(x, y), new Coord(attrw + wbox.bisz().x + 10, 0), skills);
             Tabs.Tab nsk = lists.add();
             {
                 this.nsk = nsk.add(new SkillList(lists.sz.x - wbox.bisz().x, 7) {
@@ -1730,8 +1721,8 @@ public class CharWnd extends Window {
                 }, wbox.btloff());
                 this.nsk.dav = true;
                 y = Frame.around(nsk, Collections.singletonList(this.nsk)).sz.y + 5;
-                int rx = attrw - 10;
-                Frame.around(nsk, Area.sized(new Coord(0, y).add(wbox.btloff()), new Coord(attrw, 69)));
+                int rx = attrw + 5;
+                Frame.around(nsk, Area.sized(new Coord(0, y).add(wbox.btloff()), new Coord(attrw + 10, 69)));
                 nsk.add(new Label("Learning points:"), new Coord(15, y + 10));
                 nsk.add(new ExpLabel(new Coord(rx, y + 10)));
                 nsk.add(new Label("Cost:"), new Coord(15, y + 25));
@@ -1810,10 +1801,10 @@ public class CharWnd extends Window {
         Tabs.Tab wounds;
         {
             wounds = tabs.add();
-            wounds.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Health & Wounds")).tex()), new Coord(0, 0));
-            this.wounds = wounds.add(new WoundList(attrw, 12), new Coord(260, 35).add(wbox.btloff()));
+            wounds.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Health & Wounds")).tex()), new Coord(0, 0));
+            this.wounds = wounds.add(new WoundList(attrw + 10, 12), new Coord(265, 35).add(wbox.btloff()));
             Frame.around(wounds, Collections.singletonList(this.wounds));
-            woundbox = wounds.add(new Widget(new Coord(attrw, this.wounds.sz.y)) {
+            woundbox = wounds.add(new Widget(new Coord(attrw + 10, this.wounds.sz.y)) {
                 public void draw(GOut g) {
                     g.chcolor(0, 0, 0, 128);
                     g.frect(Coord.z, sz);
@@ -1825,15 +1816,15 @@ public class CharWnd extends Window {
                     if (w == wound)
                         wound = null;
                 }
-            }, new Coord(5, 35).add(wbox.btloff()));
+            }, new Coord(0, 35).add(wbox.btloff()));
             Frame.around(wounds, Collections.singletonList(woundbox));
         }
 
         Tabs.Tab quests;
         {
             quests = tabs.add();
-            quests.add(new Img(catf.render(Resource.getLocString(Resource.l10nLabel, "Quest Log")).tex()), new Coord(0, 0));
-            questbox = quests.add(new Widget(new Coord(attrw, 260)) {
+            quests.add(new Img(catf.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Quest Log")).tex()), new Coord(0, 0));
+            questbox = quests.add(new Widget(new Coord(attrw + 10, 260)) {
                 public void draw(GOut g) {
                     g.chcolor(0, 0, 0, 128);
                     g.frect(Coord.z, sz);
@@ -1845,17 +1836,17 @@ public class CharWnd extends Window {
                     if (w == quest)
                         quest = null;
                 }
-            }, new Coord(5, 35).add(wbox.btloff()));
+            }, new Coord(0, 35).add(wbox.btloff()));
             Frame.around(quests, Collections.singletonList(questbox));
-            Tabs lists = new Tabs(new Coord(260, 35), new Coord(attrw + wbox.bisz().x, 0), quests);
+            Tabs lists = new Tabs(new Coord(265, 35), new Coord(attrw + 10 + wbox.bisz().x, 0), quests);
             Tabs.Tab cqst = lists.add();
             {
-                this.cqst = cqst.add(new QuestList(attrw, 11), new Coord(0, 0).add(wbox.btloff()));
+                this.cqst = cqst.add(new QuestList(attrw + 10, 11), new Coord(0, 0).add(wbox.btloff()));
                 Frame.around(cqst, Collections.singletonList(this.cqst));
             }
             Tabs.Tab dqst = lists.add();
             {
-                this.dqst = dqst.add(new QuestList(attrw, 11), new Coord(0, 0).add(wbox.btloff()));
+                this.dqst = dqst.add(new QuestList(attrw + 10, 11), new Coord(0, 0).add(wbox.btloff()));
                 Frame.around(dqst, Collections.singletonList(this.dqst));
             }
             lists.pack();
@@ -1896,17 +1887,17 @@ public class CharWnd extends Window {
             fgt = tabs.add();
 
             prev = add(new TB("battr", battr), new Coord(tabs.c.x + 5, tabs.c.y + tabs.sz.y + 10));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Base Attributes"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Base Attributes"));
             prev = add(new TB("sattr", sattr), new Coord(prev.c.x + prev.sz.x + 5, prev.c.y));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Abilities"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Abilities"));
             prev = add(new TB("skill", skills), new Coord(prev.c.x + prev.sz.x + 5, prev.c.y));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Lore & Skills"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Lore & Skills"));
             prev = add(new TB("fgt", fgt), new Coord(prev.c.x + prev.sz.x + 5, prev.c.y));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Martial Arts & Combat Schools"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Martial Arts & Combat Schools"));
             prev = add(new TB("wound", wounds), new Coord(prev.c.x + prev.sz.x + 5, prev.c.y));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Health & Wounds"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Health & Wounds"));
             prev = add(new TB("quest", quests), new Coord(prev.c.x + prev.sz.x + 5, prev.c.y));
-            prev.settip(Resource.getLocString(Resource.l10nLabel, "Quest Log"));
+            prev.settip(Resource.getLocString(Resource.BUNDLE_LABEL, "Quest Log"));
         }
 
         resize(contentsz().add(15, 10));
@@ -1915,9 +1906,9 @@ public class CharWnd extends Window {
     public void addchild(Widget child, Object... args) {
         String place = (args[0] instanceof String) ? (((String) args[0]).intern()) : null;
         if (place == "study") {
-            sattr.add(child, new Coord(260, 35).add(wbox.btloff()));
+            sattr.add(child, new Coord(255, 35).add(wbox.btloff()));
             Frame.around(sattr, Collections.singletonList(child));
-            Widget inf = sattr.add(new StudyInfo(new Coord(attrw - 150, child.sz.y), child), new Coord(260 + 150, child.c.y).add(wbox.btloff().x, 0));
+            Widget inf = sattr.add(new StudyInfo(new Coord(attrw - 130, child.sz.y), child), new Coord(255 + 150, child.c.y).add(wbox.btloff().x, 0));
             sattr.add(new CheckBox("Lock") {
                 {
                     a = Config.studylock;
@@ -1928,7 +1919,7 @@ public class CharWnd extends Window {
                     Config.studylock = val;
                     a = val;
                 }
-            }, new Coord(412, 10));
+            }, new Coord(407, 10));
             sattr.add(new CheckBox("Auto") {
                 {
                     a = Config.autostudy;
@@ -1939,7 +1930,7 @@ public class CharWnd extends Window {
                     Config.autostudy = val;
                     a = val;
                 }
-            }, new Coord(460, 10));
+            }, new Coord(465, 10));
             Frame.around(sattr, Collections.singletonList(inf));
         } else if (place == "fmg") {
             fgt.add(child, 0, 0);

@@ -304,6 +304,15 @@ public class GOut {
         checkerr();
     }
 
+    public void atext(String text, Coord c, double ax, double ay, Text.Foundry foundry) {
+        Text t = Text.render(text, Color.WHITE, foundry);
+        Tex T = t.tex();
+        Coord sz = t.sz();
+        image(T, c.add((int) ((double) sz.x * -ax), (int) ((double) sz.y * -ay)));
+        T.dispose();
+        checkerr();
+    }
+
     public void atextstroked(String text, Coord c, Color color, Color stroke) {
         Text t = Text.renderstroked(text, color, stroke);
         Tex T = t.tex();
@@ -462,9 +471,9 @@ public class GOut {
         double d = 0.1;
         int i = 0;
         double a = a1;
-        while (true) {
-            vertex(c.add((int) Math.round(Math.cos(a) * r.x), -(int) Math.round(Math.sin(a) * r.y)));
-            if (a >= a2)
+        while(true) {
+            vertex(c.add((int)Math.round(Math.cos(a) * r.x), -(int)Math.round(Math.sin(a) * r.y)));
+            if(a >= a2)
                 break;
             a = Math.min(a + d, a2);
         }

@@ -28,19 +28,21 @@ package haven;
 
 import haven.automation.ErrorSysMsgCallback;
 
-import java.text.DecimalFormat;
+import java.awt.*;
 import java.util.*;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static haven.GItem.Quality.AVG_MODE_GEOMETRIC;
+import static haven.GItem.Quality.AVG_MODE_QUADRATIC;
 import static haven.Inventory.invsq;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
-    public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, 14);
-    public static final Text.Foundry progressf = new Text.Foundry(Text.sansb, 12).aa(true);
+    public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, Config.fontsizeglobal * 14 / 11);
+    public static final Text.Foundry progressf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD), 12).aa(true);
     private static final int blpw = 142, brpw = 142;
     public final String chrid;
     public final long plid;
@@ -69,7 +71,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean afk = false;
     @SuppressWarnings("unchecked")
     public Indir<Resource>[] belt = new Indir[144];
-    public Belt beltwdg;
+    public Belt beltwdg = add(new NKeyBelt());
     public String polowner;
     public Bufflist buffs;
     public MinimapWnd minimapWnd;
@@ -87,7 +89,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public CraftHistoryBelt histbelt;
     private ErrorSysMsgCallback errmsgcb;
     private static final Pattern esvMsgPattern = Pattern.compile("Essence: ([0-9]+), Substance: ([0-9]+), Vitality: ([0-9]+)");
-    private static final DecimalFormat shortfmt = new DecimalFormat("#.#");
 
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
@@ -167,7 +168,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
         umpanel.add(new Cal(), new Coord(0, 10));
-        syslog = chat.add(new ChatUI.Log("System"));
+        add(new Widget(new Coord(300, 40)) {
+            @Override
+            public void draw(GOut g) {
+                if (Config.showservertime) {
+                    Tex time = ui.sess.glob.servertimetex;
+                    if (time != null)
+                        g.image(time, new Coord(300 / 2 - time.sz().x / 2, 0));
+                }
+            }
+        }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
+        syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
         opts = add(new OptWnd());
         opts.hide();
         zerg = add(new Zergwnd(), 187, 50);
@@ -745,23 +756,21 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void uimsg(String msg, Object... args) {
         if (msg == "err") {
             String err = (String) args[0];
-            if (Config.showtoggles) {
-                if (err.startsWith("Swimming is now turned")) {
-                    togglebuff(err, "swim", Bufflist.buffswim);
-                } else if (err.startsWith("Tracking is now turned")) {
-                    togglebuff(err, "track", Bufflist.bufftrack);
-                    if (trackautotgld) {
-                        errornosfx(err);
-                        trackautotgld = false;
-                        return;
-                    }
-                } else if (err.startsWith("Criminal acts are now turned")) {
-                    togglebuff(err, "crime", Bufflist.buffcrime);
-                    if (crimeautotgld) {
-                        errornosfx(err);
-                        crimeautotgld = false;
-                        return;
-                    }
+            if (err.startsWith("Swimming is now turned")) {
+                togglebuff(err, "swim", Bufflist.buffswim);
+            } else if (err.startsWith("Tracking is now turned")) {
+                togglebuff(err, "track", Bufflist.bufftrack);
+                if (trackautotgld) {
+                    errornosfx(err);
+                    trackautotgld = false;
+                    return;
+                }
+            } else if (err.startsWith("Criminal acts are now turned")) {
+                togglebuff(err, "crime", Bufflist.buffcrime);
+                if (crimeautotgld) {
+                    errornosfx(err);
+                    crimeautotgld = false;
+                    return;
                 }
             }
             error(err);
@@ -863,7 +872,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public class MainMenu extends Widget {
         public MainMenu() {
             super(menubg.sz());
-            add(new MenuButton("rbtn-inv", 9, Resource.getLocString(Resource.l10nLabel, "Inventory ($col[255,255,0]{Tab})")) {
+            add(new MenuButton("rbtn-inv", 9, Resource.getLocString(Resource.BUNDLE_LABEL, "Inventory ($col[255,255,0]{Tab})")) {
                 public void click() {
                     if ((invwnd != null) && invwnd.show(!invwnd.visible)) {
                         invwnd.raise();
@@ -871,7 +880,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-equ", 5, Resource.getLocString(Resource.l10nLabel, "Equipment ($col[255,255,0]{Ctrl+E})")) {
+            add(new MenuButton("rbtn-equ", 5, Resource.getLocString(Resource.BUNDLE_LABEL, "Equipment ($col[255,255,0]{Ctrl+E})")) {
                 public void click() {
                     if ((equwnd != null) && equwnd.show(!equwnd.visible)) {
                         equwnd.raise();
@@ -879,7 +888,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-chr", 20, Resource.getLocString(Resource.l10nLabel, "Character Sheet ($col[255,255,0]{Ctrl+T})")) {
+            add(new MenuButton("rbtn-chr", 20, Resource.getLocString(Resource.BUNDLE_LABEL, "Character Sheet ($col[255,255,0]{Ctrl+T})")) {
                 public void click() {
                     if ((chrwdg != null) && chrwdg.show(!chrwdg.visible)) {
                         chrwdg.raise();
@@ -887,7 +896,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-bud", 2, Resource.getLocString(Resource.l10nLabel, "Kith & Kin ($col[255,255,0]{Ctrl+B})")) {
+            add(new MenuButton("rbtn-bud", 2, Resource.getLocString(Resource.BUNDLE_LABEL, "Kith & Kin ($col[255,255,0]{Ctrl+B})")) {
                 public void click() {
                     if (zerg.show(!zerg.visible)) {
                         zerg.raise();
@@ -896,7 +905,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     }
                 }
             }, 0, 0);
-            add(new MenuButton("rbtn-opt", 15, Resource.getLocString(Resource.l10nLabel, "Options ($col[255,255,0]{Ctrl+O})")) {
+            add(new MenuButton("rbtn-opt", 15, Resource.getLocString(Resource.BUNDLE_LABEL, "Options ($col[255,255,0]{Ctrl+O})")) {
                 public void click() {
                     if (opts.show(!opts.visible)) {
                         opts.raise();
@@ -1073,15 +1082,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void msg(String msg, Color color, Color logcol) {
         msgtime = System.currentTimeMillis();
-
-        if (Resource.L10N_DEBUG)
-            Resource.l10nMsg = Resource.saveStrings(Resource.BUNDLE_MSG, Resource.l10nMsg, msg, msg);
-
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nMsg != null && Resource.l10nMsg.containsKey(msg))
-                msg = Resource.l10nMsg.get(msg);
-        }
-
+        msg = Resource.getLocString(Resource.BUNDLE_MSG, msg);
         lastmsg = msgfoundry.render(msg, color);
         syslog.append(msg, logcol);
         if (color == Color.WHITE)
@@ -1112,8 +1113,20 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             int e = Integer.parseInt(m.group(1));
             int s = Integer.parseInt(m.group(2));
             int v = Integer.parseInt(m.group(3));
-            double avg = Config.arithavg ? (e + s + v) / 3.0 : Math.sqrt((e * e + s * s + v * v) / 3.0);
-            msg += "  (Avg: " + shortfmt.format(avg) + ")";
+
+            double avg;
+            switch (Config.avgmode) {
+                case AVG_MODE_QUADRATIC:
+                    avg =  Math.sqrt((e * e + s * s + v * v) / 3.0);
+                    break;
+                case AVG_MODE_GEOMETRIC:
+                    avg =  Math.pow(e * s * v, 1.0 / 3.0);
+                    break;
+                default:
+                    avg =  (e + s + v) / 3.0;
+                    break;
+            }
+            msg += "  (Avg: " + Utils.fmt1DecPlace(avg) + ")";
         }
         msg(msg, Color.WHITE, Color.WHITE);
     }
@@ -1200,102 +1213,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         return null;
     }
 
-    public class FKeyBelt extends Belt implements DTarget, DropTarget {
-        public final int beltkeys[] = {KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4,
-                KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8,
-                KeyEvent.VK_F9, KeyEvent.VK_F10, KeyEvent.VK_F11, KeyEvent.VK_F12};
-        public int curbelt = 0;
-
-        public FKeyBelt() {
-            super(new Coord(450, 34));
-        }
-
-        private Coord beltc(int i) {
-            return (new Coord(((invsq.sz().x + 2) * i) + (10 * (i / 4)), 0));
-        }
-
-        private int beltslot(Coord c) {
-            for (int i = 0; i < 12; i++) {
-                if (c.isect(beltc(i), invsq.sz()))
-                    return (i + (curbelt * 12));
-            }
-            return (-1);
-        }
-
-        public void draw(GOut g) {
-            for (int i = 0; i < 12; i++) {
-                int slot = i + (curbelt * 12);
-                Coord c = beltc(i);
-                g.image(invsq, beltc(i));
-                try {
-                    if (belt[slot] != null)
-                        g.image(belt[slot].get().layer(Resource.imgc).tex(), c.add(1, 1));
-                } catch (Loading e) {
-                }
-                g.chcolor(156, 180, 158, 255);
-                FastText.aprintf(g, c.add(invsq.sz().sub(2, 0)), 1, 1, "F%d", i + 1);
-                g.chcolor();
-            }
-        }
-
-        public boolean mousedown(Coord c, int button) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (button == 1)
-                    GameUI.this.wdgmsg("belt", slot, 1, ui.modflags());
-                if (button == 3)
-                    GameUI.this.wdgmsg("setbelt", slot, 1);
-                return (true);
-            }
-            return (false);
-        }
-
-        public boolean globtype(char key, KeyEvent ev) {
-            if (key != 0)
-                return (false);
-            boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
-            for (int i = 0; i < beltkeys.length; i++) {
-                if (ev.getKeyCode() == beltkeys[i]) {
-                    if (M) {
-                        curbelt = i;
-                        return (true);
-                    } else {
-                        keyact(i + (curbelt * 12));
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-
-        public boolean drop(Coord c, Coord ul) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                GameUI.this.wdgmsg("setbelt", slot, 0);
-                return (true);
-            }
-            return (false);
-        }
-
-        public boolean iteminteract(Coord c, Coord ul) {
-            return (false);
-        }
-
-        public boolean dropthing(Coord c, Object thing) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (thing instanceof Resource) {
-                    Resource res = (Resource) thing;
-                    if (res.layer(Resource.action) != null) {
-                        GameUI.this.wdgmsg("setbelt", slot, res.name);
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-    }
-
     private static final Tex nkeybg = Resource.loadtex("gfx/hud/hb-main");
 
     public class NKeyBelt extends Belt implements DTarget, DropTarget {
@@ -1308,7 +1225,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 Tex glow;
 
                 {
-                    this.tooltip = RichText.render(Resource.getLocString(Resource.l10nLabel, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
+                    this.tooltip = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
                     glow = new TexI(PUtils.rasterimg(PUtils.blurmask(up.getRaster(), 2, 2, Color.WHITE)));
                 }
 
@@ -1422,19 +1339,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
-    {
-        String val = Utils.getpref("belttype", "n");
-        if (val.equals("n")) {
-            beltwdg = add(new NKeyBelt());
-        } else if (val.equals("f")) {
-            beltwdg = add(new FKeyBelt());
-        } else {
-            beltwdg = add(new NKeyBelt());
-        }
-    }
-
     private Map<String, Console.Command> cmdmap = new TreeMap<String, Console.Command>();
-
     {
         cmdmap.put("afk", new Console.Command() {
             public void run(Console cons, String[] args) {
@@ -1447,21 +1352,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 Object[] ad = new Object[args.length - 1];
                 System.arraycopy(args, 1, ad, 0, ad.length);
                 wdgmsg("act", ad);
-            }
-        });
-        cmdmap.put("belt", new Console.Command() {
-            public void run(Console cons, String[] args) {
-                if (args[1].equals("f")) {
-                    beltwdg.destroy();
-                    beltwdg = add(new FKeyBelt());
-                    Utils.setpref("belttype", "f");
-                    resize(sz);
-                } else if (args[1].equals("n")) {
-                    beltwdg.destroy();
-                    beltwdg = add(new NKeyBelt());
-                    Utils.setpref("belttype", "n");
-                    resize(sz);
-                }
             }
         });
         cmdmap.put("tool", new Console.Command() {

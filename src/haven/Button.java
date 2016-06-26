@@ -46,7 +46,7 @@ public class Button extends SIWidget {
     public boolean lg;
     public Text text;
     public BufferedImage cont;
-    static Text.Foundry tf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD, Resource.language.equals("en") ? 12 : 10)).aa(true);
+    static Text.Foundry tf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD, Config.fontsizebutton)).aa(true);
     static Text.Furnace nf = new PUtils.BlurFurn(new PUtils.TexFurn(tf, Window.ctex), 1, 1, new Color(80, 40, 0));
     boolean a = false;
     UI.Grab d = null;
@@ -66,13 +66,7 @@ public class Button extends SIWidget {
     }
 
     public static Button wrapped(int w, String text) {
-        if (Resource.L10N_DEBUG)
-            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
-                text = Resource.l10nButton.get(text);
-        }
-        Button ret = new Button(w, tf.renderwrap(text, w - 10));
+        Button ret = new Button(w, tf.renderwrap(Resource.getLocString(Resource.BUNDLE_BUTTON, text), w - 10));
         return (ret);
     }
 
@@ -87,29 +81,17 @@ public class Button extends SIWidget {
 
     public Button(int w, String text, boolean lg) {
         this(w, lg);
-        if (Resource.L10N_DEBUG)
-            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
-                text = Resource.l10nButton.get(text);
-        }
-        this.text = nf.render(text);
+        this.text = nf.render(Resource.getLocString(Resource.BUNDLE_BUTTON, text));
         this.cont = this.text.img;
-        if (!Resource.language.equals("en") && this.text != null)
+        if (this.text != null)
             this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
     public Button(int w, String text) {
         this(w);
-        if (Resource.L10N_DEBUG)
-            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
-                text = Resource.l10nButton.get(text);
-        }
-        this.text = nf.render(text);
+        this.text = nf.render(Resource.getLocString(Resource.BUNDLE_BUTTON, text));
         this.cont = this.text.img;
-        if (!Resource.language.equals("en") && this.text != null)
+        if (this.text != null)
             this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
@@ -117,7 +99,7 @@ public class Button extends SIWidget {
         this(w);
         this.text = text;
         this.cont = text.img;
-        if (!Resource.language.equals("en") && this.text != null)
+        if (this.text != null)
             this.resize(new Coord(Math.max(w, this.text.sz().x + 10), sz.y));
     }
 
@@ -147,13 +129,7 @@ public class Button extends SIWidget {
     }
 
     public void change(String text, Color col) {
-        if (Resource.L10N_DEBUG)
-            Resource.l10nButton = Resource.saveStrings(Resource.BUNDLE_BUTTON, Resource.l10nButton, text, text);
-        if (!Resource.language.equals("en") || Resource.L10N_DEBUG) {
-            if (Resource.l10nButton != null && Resource.l10nButton.containsKey(text))
-                text = Resource.l10nButton.get(text);
-        }
-        this.text = tf.render(text, col);
+        this.text = tf.render(Resource.getLocString(Resource.BUNDLE_BUTTON, text), col);
         this.cont = this.text.img;
         redraw();
     }

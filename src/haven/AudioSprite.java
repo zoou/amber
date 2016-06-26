@@ -39,7 +39,7 @@ public class AudioSprite {
         }
         if (!cl.isEmpty()) {
             int rnd = (int) (Math.random() * cl.size());
-            if (Config.nometallicsfx && rnd == 1 && "sfx/items/pickaxe".equals(res.name) )
+            if (rnd == 1 && "sfx/items/pickaxe".equals(res.name) )
                 rnd = 0;
             return cl.get(rnd);
         }
@@ -76,8 +76,8 @@ public class AudioSprite {
 
             if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
-            else if (Config.sfxsqueakvol != 1.0 && "sfx/squeak".equals(res.name))
-                stream = new Audio.VolAdjust(stream, Config.sfxsqueakvol);
+            else if ("sfx/squeak".equals(res.name))
+                stream = new Audio.VolAdjust(stream, 0.2);
             else if (Config.sfxquernvol != 1.0 && "sfx/terobjs/quern".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxquernvol);
 
