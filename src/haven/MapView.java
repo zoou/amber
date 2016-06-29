@@ -1933,7 +1933,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public Coord lastinterpc;
     private Coord lastintermc;
     private int lastintergobid;
-    private Coord2d lastintergobrc;
+    private Coord lastintergobrc;
     private int lastintermid;
 
     public boolean iteminteract(Coord cc, Coord ul) {
@@ -1950,7 +1950,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         lastinterpc = pc;
                         lastintermc = mc.floor(posres);
                         lastintergobid = (int) inf.gob.id;
-                        lastintergobrc = inf.gob.rc;
+                        lastintergobrc = inf.gob.rc.floor(posres);
                         lastintermid = getid(inf.r);
                         wdgmsg("itemact", pc, mc.floor(posres), ui.modflags(), 0, lastintergobid, lastintergobrc, 0, lastintermid);
                     } else {
