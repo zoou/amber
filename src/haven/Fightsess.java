@@ -26,11 +26,14 @@
 
 package haven;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 public class Fightsess extends Widget {
+    public static final Tex meters = Resource.loadtex("gfx/hud/combat/cmbmeters");
     private static final Text.Foundry cdfndr = new Text.Foundry(Text.serif, 18).aa(true);
     private static final Color cdclrpos = new Color(128, 128, 255);
     private static final Color cdclrneg = new Color(239, 41, 41);
@@ -38,10 +41,11 @@ public class Fightsess extends Widget {
     public static final int actpitch = 50;
     public final Indir<Resource>[] actions;
     public final boolean[] dyn;
-    public int use = -1;
+    public int use = -1, useb = -1;
     public Coord pcc;
     public int pho;
     private final Fightview fv;
+    private static final DecimalFormat cdfmt = new DecimalFormat("#.#");
     private static final Map<Long, Tex> cdvalues = new HashMap<Long, Tex>(7);
 
     private static final Map<String, Integer> atkcds = new HashMap<String, Integer>(9){{
@@ -133,6 +137,13 @@ public class Fightsess extends Widget {
         }
     };
 
+    private static final Coord cmc = new Coord(150, 27);
+    private static final Coord msz = new Coord(92, 12);
+    private static final Coord o1c = new Coord(119, 9);
+    private static final Coord d1c = new Coord(119, 33);
+    private static final Coord o2c = new Coord(181, 9);
+    private static final Coord d2c = new Coord(181, 33);
+
     public void draw(GOut g) {
         updatepos();
         double now = System.currentTimeMillis() / 1000.0;
@@ -152,21 +163,36 @@ public class Fightsess extends Widget {
             if (Config.showcddelta && fv.current != null) {
                 Tex cdtex = cdvalues.get(fv.current.gobid);
                 if (cdtex != null)
-                    g.aimage(cdtex, pcc.add(0, 110), 0.5, 1);
+                    g.aimage(cdtex, pcc.add(0, 175), 0.5, 1);
             }
         }
 
+        Coord mul = pcc.add(-meters.sz().x / 2, 40);
         if (now < fv.atkct) {
             double cd = fv.atkct - now;
-            int w = (int) (cd * 20);
-            g.chcolor(255, 0, 128, 255);
-            g.frect(pcc.add(-w, 20), new Coord(w * 2, 15));
+            double a = (now - fv.atkcs) / (fv.atkct - fv.atkcs);
+            g.chcolor(255, 0, 128, 224);
+            g.fellipse(mul.add(cmc), new Coord(24, 24), Math.PI / 2 - (Math.PI * 2 * Math.min(1.0 - a, 1.0)), Math.PI / 2);
             g.chcolor();
             if (Config.showcooldown)
-                g.atextstroked(Utils.fmt1DecPlace(cd), pcc.add(0, 27), 0.5, 0.5, Color.WHITE, Color.BLACK);
+                g.atextstroked(cdfmt.format(cd), pcc.add(0, 27), 0.5, 0.5, Color.WHITE, Color.BLACK);
         }
-        Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
+        g.chcolor(255, 0, 0, 224);
+        g.frect(mul.add(o1c).sub((int) Math.round(msz.x * fv.off), 0), new Coord((int) Math.round(msz.x * fv.off), msz.y));
+        g.chcolor(0, 0, 255, 224);
+        g.frect(mul.add(d1c).sub((int) Math.round(msz.x * fv.def), 0), new Coord((int) Math.round(msz.x * fv.def), msz.y));
+        if (fv.current != null) {
+            g.chcolor(255, 0, 0, 224);
+            g.frect(mul.add(o2c), new Coord((int) Math.round(msz.x * fv.current.off), msz.y));
+            g.chcolor(0, 0, 255, 224);
+            g.frect(mul.add(d2c), new Coord((int) Math.round(msz.x * fv.current.def), msz.y));
+        }
+        g.chcolor();
+        g.image(meters, mul);
+        final int rl = 5;
+
         for (int i = 0; i < actions.length; i++) {
+            Coord ca = pcc.add((actpitch * (i % rl)) - ((rl * actpitch) / 2), 110 + ((i / rl) * actpitch));
             Indir<Resource> act = actions[i];
             try {
                 if (act != null) {
@@ -176,6 +202,11 @@ public class Fightsess extends Widget {
                     if (i == use) {
                         g.chcolor(255, 0, 128, 255);
                         g.frect(ca.add(0, img.sz().y + 3), new Coord(img.sz().x, 5));
+                        g.chcolor();
+                    } else if(i == useb) {
+                        g.chcolor(128, 0, 255, 255);
+                        Coord cc = ca.add(img.sz().x / 2, img.sz().y + 5);
+                        g.frect(cc.sub(2, 2), new Coord(5, 5));
                         g.chcolor();
                     }
                 }
@@ -210,8 +241,9 @@ public class Fightsess extends Widget {
                 }
             }
         }
-        Coord ca = pcc.add(-(actions.length * actpitch) / 2, 45);
+        final int rl = 5;
         for (int i = 0; i < actions.length; i++) {
+            Coord ca = pcc.add((actpitch * (i % rl)) - ((rl * actpitch) / 2), 110 + ((i / rl) * actpitch));
             Indir<Resource> act = actions[i];
             try {
                 if (act != null) {
@@ -241,6 +273,7 @@ public class Fightsess extends Widget {
             }
         } else if (msg == "use") {
             this.use = (Integer) args[0];
+            this.useb = (Integer)args[1];
         } else if (msg == "used") {
             Indir<Resource> act = actions[(Integer) args[0]];
             try {
@@ -257,25 +290,42 @@ public class Fightsess extends Widget {
                 }
             } catch (Loading l) {
             }
-        } else if (msg == "dropped") {
         } else {
             super.uimsg(msg, args);
         }
     }
 
     public boolean globtype(char key, KeyEvent ev) {
-        int c = ev.getKeyChar();
         if (Config.userazerty)
-            c = Utils.azerty2qwerty((char) c);
+            key = Utils.azerty2qwerty(ev.getKeyChar());
 
-        if((key == 0) && (c >= KeyEvent.VK_1) && (c < KeyEvent.VK_1 + actions.length)) {
-            int n = c - KeyEvent.VK_1;
-            if ((ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
-                wdgmsg("drop", n);
-            else
+        if((ev.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) == 0) {
+            int n = -1;
+            switch(key) {
+                case '1': n = 0; break;
+                case '2': n = 1; break;
+                case '3': n = 2; break;
+                case '4': n = 3; break;
+                case '5': n = 4; break;
+                case 'q': n = 5; break;
+                case 'w': n = 6; break;
+                case 'e': n = 7; break;
+                case 'r': n = 8; break;
+                case 't': n = 9; break;
+            }
+            if((n >= 0) && (n < actions.length)) {
                 wdgmsg("use", n);
-            return (true);
+                return(true);
+            }
+        } else if((key == 9) && ((ev.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)) {
+            Fightview.Relation cur = fv.current;
+            if(cur != null) {
+                fv.lsrel.remove(cur);
+                fv.lsrel.addLast(cur);
+            }
+            fv.wdgmsg("bump", (int)fv.lsrel.get(0).gobid);
+            return(true);
         }
-        return (super.globtype(key, ev));
+        return(super.globtype(key, ev));
     }
 }

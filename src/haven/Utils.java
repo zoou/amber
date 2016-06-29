@@ -1299,7 +1299,7 @@ public class Utils {
         return (null);
     }
 
-    private final static Map<Character, Character> az2qwmap = new HashMap<Character, Character>(10) {{
+    private final static Map<Character, Character> az2qwmap = new HashMap<Character, Character>(12) {{
         put('&', '1');
         put('é', '2');
         put('"', '3');
@@ -1310,6 +1310,8 @@ public class Utils {
         put('_', '8');
         put('ç', '9');
         put('à', '0');
+        put('a', 'q');
+        put('z', 'w');
     }};
 
     public static char azerty2qwerty(char az) {
