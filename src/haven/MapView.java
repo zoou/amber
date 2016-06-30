@@ -1872,7 +1872,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                         if (inf == null) {
                             MCache map = ui.sess.glob.map;
-                            int t = map.gettile(mc.floor(posres));
+                            int t = map.gettile(mc.floor(tilesz));
                             Resource res = map.tilesetr(t);
                             if (res != null) {
                                 tooltip = res.name;
