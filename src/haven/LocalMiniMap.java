@@ -481,9 +481,10 @@ public class LocalMiniMap extends Widget {
                     if (f == null) {
                         f = Defer.later(new Defer.Callable<MapTile>() {
                             public MapTile call() {
-                                boolean gczero = plg.gc.equals(Coord.z);
-                                if (gczero && cur == null || cur != null && gczero && cur.grid != plg)
+                                // clear tiles on teleports
+                                if (cur != null && seq == cur.seq && plg.gc.dist(cur.grid.gc) > 1.5)
                                     maptiles.clear();
+
                                 Coord ul = plg.ul;
                                 Coord gc = plg.gc;
                                 maptiles.put(gc.add(-1, -1), drawmap(ul.add(-100, -100), cmaps));
@@ -636,5 +637,9 @@ public class LocalMiniMap extends Widget {
             dragging = null;
         }
         return (true);
+    }
+
+    public void clearmap() {
+        maptiles.clear();
     }
 }

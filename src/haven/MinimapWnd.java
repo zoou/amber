@@ -12,7 +12,7 @@ public class MinimapWnd extends Widget {
     private static final Tex bl = Resource.loadtex("gfx/hud/wndmap/lg/bl");
     private static final Tex br = Resource.loadtex("gfx/hud/wndmap/lg/br");
     private static final Coord tlm = new Coord(3, 3), brm = new Coord(4, 4);
-    private final Widget mmap;
+    private final LocalMiniMap mmap;
     private final MapView map;
     private IButton center, viewdist, grid;
     private ToggleButton pclaim, vclaim, lock;
@@ -322,5 +322,9 @@ public class MinimapWnd extends Widget {
         } else {
             resize(szr);
         }
+    }
+
+    public void clearmap() {
+        mmap.clearmap();
     }
 }

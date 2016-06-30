@@ -1515,6 +1515,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             placing = null;
         } else if (msg == "move") {
             cc = ((Coord)args[0]).mul(posres);
+            gameui().minimapWnd.clearmap();
         } else if (msg == "plob") {
             if (args[0] == null)
                 plgob = -1;
