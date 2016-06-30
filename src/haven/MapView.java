@@ -1908,10 +1908,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             return (true);
         if ((placing != null) && placing.adjust.rotate(placing, amount, ui.modflags()))
             return (true);
-        if (ui.modshift) {
-            gameui().fv.rotateopp();
-            return true;
-        }
         return (((Camera) camera).wheel(c, amount));
     }
 
