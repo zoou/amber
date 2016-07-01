@@ -26,8 +26,6 @@
 
 package haven;
 
-import static java.lang.Math.PI;
-
 public class Coord2d implements Comparable<Coord2d>, java.io.Serializable {
     public double x, y;
     public static final Coord2d z = new Coord2d(0, 0);
@@ -156,9 +154,5 @@ public class Coord2d implements Comparable<Coord2d>, java.io.Serializable {
 
     public static Coord2d sc(double a, double r) {
 	return(new Coord2d(Math.cos(a) * r, Math.sin(a) * r));
-    }
-
-    public double manhattan2(Coord2d c){
-        return Math.max(Math.abs(x - c.x) , Math.abs(y - c.y));
     }
 }

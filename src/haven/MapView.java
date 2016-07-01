@@ -65,7 +65,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private String tooltip;
     private boolean showgrid;
     private TileOutline gridol;
-    private Coord2d lasttc = Coord2d.z;
+    private Coord lasttc = Coord.z;
     private static final Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0));
     private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0));
     private static final Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F));
@@ -501,7 +501,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         this.cc = cc;
         this.plgob = plgob;
         this.gobs = new Gobs();
-        this.gridol = new TileOutline(glob.map, MCache.cutsz.mul(2 * (view + 1)));
+        this.gridol = new TileOutline(glob.map);
         this.partyHighlight = new PartyHighlight(glob.party, plgob);
         setcanfocus(true);
     }
@@ -1372,12 +1372,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
                 // we ignore Defer.DeferredException to prevent the client for crashing
             }
-            // change grid overlay position when player moves by 20 tiles
             if (showgrid) {
-                Coord2d tc = cc.div(MCache.tilesz);
-                if (tc.manhattan2(lasttc) > 20) {
+                Coord tc = new Coord((int) (cc.x / tilesz.x / MCache.cutsz.x - view - 1) * MCache.cutsz.x,
+                        (int) (cc.y / tilesz.y / MCache.cutsz.y - view - 1) * MCache.cutsz.y);
+                if (!tc.equals(lasttc)) {
                     lasttc = tc;
-                    gridol.update(tc.sub(new Coord2d(MCache.cutsz.mul(view + 1))));
+                    gridol.update(tc);
                 }
             }
         } catch (Loading e) {
@@ -2219,9 +2219,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void togglegrid() {
         showgrid = !showgrid;
         if (showgrid) {
-            Coord2d tc = cc.div(MCache.tilesz);
-            lasttc = tc.div(100, 100);
-            gridol.update(tc.sub(new Coord2d(MCache.cutsz.mul(view + 1))));
+            Coord tc = new Coord((int) (cc.x / tilesz.x / MCache.cutsz.x - view - 1) * MCache.cutsz.x,
+                    (int) (cc.y / tilesz.y / MCache.cutsz.y - view - 1) * MCache.cutsz.y);
+            lasttc = tc;
+            gridol.update(tc);
         }
     }
 
