@@ -30,7 +30,7 @@ import java.awt.Color;
 import java.awt.image.*;
 import java.util.*;
 import java.nio.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 import haven.TexGL.TexOb;
 

@@ -29,7 +29,7 @@ package haven;
 import static haven.MCache.tilesz;
 
 import java.util.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;

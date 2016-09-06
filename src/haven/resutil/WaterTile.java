@@ -38,7 +38,7 @@ import haven.MapMesh.Scan;
 import haven.Surface.Vertex;
 import haven.Surface.MeshVertex;
 
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 import java.awt.Color;
 
 public class WaterTile extends Tiler {

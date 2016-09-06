@@ -28,7 +28,7 @@ package haven.rs;
 
 import haven.*;
 
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 import java.awt.image.BufferedImage;
 
 public class GBuffer {
@@ -69,12 +69,12 @@ public class GBuffer {
                     buf.put(MainFrame.global, this);
                 }
             };
-        /* XXX: This seems a bit unreliable. On Xorg with nvidia
-         * drivers, an OffscreenAutoDrawable produces no results,
-	     * while a Pbuffer works; while on Xvfb with mesa-swx, an
-	     * OffscreenAutoDrawable works, while Pbuffer creation
-	     * fails. :-/ */
-            this.buf = df.createOffscreenAutoDrawable(null, caps(prof), null, 1, 1, null);
+            /* XXX: This seems a bit unreliable. On Xorg with nvidia
+             * drivers, an OffscreenAutoDrawable produces no results,
+             * while a Pbuffer works; while on Xvfb with mesa-swx, an
+             * OffscreenAutoDrawable works, while Pbuffer creation
+             * fails. :-/ */
+            this.buf = df.createOffscreenAutoDrawable(null, caps(prof), null, 1, 1);
             buf.addGLEventListener(new GLEventListener() {
                 public void display(GLAutoDrawable d) {
                     GL2 gl = d.getGL().getGL2();

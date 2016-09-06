@@ -28,7 +28,7 @@ package haven;
 
 import java.util.*;
 import java.lang.reflect.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 /*
  * XXX: Hmmpf. This whole thing seems very overly complex, but I

@@ -31,7 +31,7 @@ import java.util.*;
 
 import static haven.GOut.checkerr;
 
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 public abstract class PView extends Widget {
     public RenderList rls;

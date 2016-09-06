@@ -34,7 +34,7 @@ import haven.automation.SteelRefueler;
 import haven.pathfinder.*;
 import haven.resutil.BPRadSprite;
 
-import javax.media.opengl.GL;
+import com.jogamp.opengl.GL;
 import java.awt.*;
 import java.lang.ref.*;
 import java.lang.reflect.Constructor;

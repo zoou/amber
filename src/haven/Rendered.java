@@ -28,7 +28,7 @@ package haven;
 
 import java.util.Comparator;
 import java.util.List;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 public interface Rendered extends Drawn {
     public boolean setup(RenderList r);

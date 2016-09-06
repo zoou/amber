@@ -31,9 +31,9 @@ import com.jogamp.newt.event.*;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.AnimatorBase;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.jogamp.opengl.util.awt.Screenshot;
+//import com.jogamp.opengl.util.awt.Screenshot;
 
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 import java.awt.*;
 import java.io.*;
@@ -379,7 +379,7 @@ public class MainFrame implements GLEventListener, Console.Directory {
         ui.audio.cycle();
 
         if (needtotakescreenshot) {
-            takescreenshot(glAutoDrawable.getWidth(), glAutoDrawable.getHeight());
+           // takescreenshot(glAutoDrawable.getWidth(), glAutoDrawable.getHeight());
             needtotakescreenshot = false;
         }
     }
@@ -389,7 +389,7 @@ public class MainFrame implements GLEventListener, Console.Directory {
             String curtimestamp = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss.SSS").format(new Date());
             File outputfile = new File(String.format("screenshots/%s.jpg", curtimestamp));
             outputfile.getParentFile().mkdirs();
-            Screenshot.writeToFile(outputfile, width, height);
+           // Screenshot.writeToFile(outputfile, width, height);
             ui.root.findchild(GameUI.class).msg(String.format("Screenshot has been saved as \"%s\"", outputfile.getName()), Color.WHITE);
         } catch (Exception ex) {
             System.out.println("Unable to take screenshot: " + ex.getMessage());

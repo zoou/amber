@@ -28,7 +28,7 @@ package haven.rs;
 
 import haven.*;
 
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 public class BufView {
     public final GBuffer buf;

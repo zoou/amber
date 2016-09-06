@@ -28,7 +28,7 @@ package haven;
 
 import java.util.*;
 import java.util.regex.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 public class GLConfig implements java.io.Serializable, Console.Directory {
     private static final Pattern slvp = Pattern.compile("^(\\d+)\\.(\\d+)");
