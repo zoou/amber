@@ -35,8 +35,9 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.AnimatorBase;
 import com.jogamp.opengl.util.FPSAnimator;
 //import com.jogamp.opengl.util.awt.Screenshot;
-
 import com.jogamp.opengl.*;
+
+import haven.error.GLExceptionHandler;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -201,7 +202,7 @@ public class MainFrame implements GLEventListener, Console.Directory {
         }
 
         animator = new FPSAnimator(glw, 60, true);
-        animator.setUpdateFPSFrames(15, null);
+        animator.setUpdateFPSFrames(10, null);
 
         final NEWTMouseAdapter mouseAdapter = new NEWTMouseAdapter(events, mainframe);
         final NEWTKeyAdapter keyAdapter = new NEWTKeyAdapter(events);
@@ -236,9 +237,9 @@ public class MainFrame implements GLEventListener, Console.Directory {
         glw.addGLEventListener(mainframe);
         glw.setSize(w, h);
         glw.setTitle(TITLE);
-        glw.setVisible(true);
-
         animator.start();
+        animator.setUncaughtExceptionHandler(new GLExceptionHandler());
+        glw.setVisible(true);
     }
 
     public static void setupres() {

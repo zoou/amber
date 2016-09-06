@@ -19,7 +19,6 @@ public class NEWTKeyAdapter extends KeyAdapter {
         synchronized (events) {
             events.add(e);
         }
-      //  System.out.println(e);
     }
 
     public void keyReleased(final KeyEvent e) {
@@ -28,6 +27,5 @@ public class NEWTKeyAdapter extends KeyAdapter {
         synchronized (events) {
             events.add(e);
         }
-      //  System.out.println(e);
     }
 }

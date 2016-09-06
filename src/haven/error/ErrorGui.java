@@ -34,13 +34,11 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import javax.swing.*;
 
-public abstract class ErrorGui extends JDialog implements ErrorStatus {
+public class ErrorGui extends JDialog {
     private JPanel details;
     private JButton closebtn, cbbtn;
     private JTextArea exbox;
-    private JScrollPane infoc, exboxc;
-    private Thread reporter;
-    private boolean done;
+    private JScrollPane exboxc;
 
     public ErrorGui(java.awt.Frame parent) {
         super(parent, "Haven error!", true);
@@ -53,7 +51,7 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
             add(new JPanel() {{
                 setLayout(new FlowLayout());
                 setAlignmentX(0);
-                add(cbbtn = new JButton("Copy To Clipboard") {{
+                add(cbbtn = new JButton("Copy to Clipboard") {{
                     addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent ev) {
                             StringSelection exc = new StringSelection(exbox.getText());
@@ -67,10 +65,7 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
                     addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent ev) {
                             ErrorGui.this.dispose();
-                            synchronized (ErrorGui.this) {
-                                done = true;
-                                ErrorGui.this.notifyAll();
-                            }
+                            Thread.currentThread().getThreadGroup().interrupt();
                             System.exit(1);
                         }
                     });
@@ -90,11 +85,7 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
                 ErrorGui.this.dispose();
-                synchronized (ErrorGui.this) {
-                    done = true;
-                    ErrorGui.this.notifyAll();
-                }
-                reporter.interrupt();
+                Thread.currentThread().getThreadGroup().interrupt();
                 System.exit(1);
             }
         });
@@ -103,34 +94,13 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
     }
 
     public boolean goterror(Throwable t) {
-        reporter = Thread.currentThread();
         java.io.StringWriter w = new java.io.StringWriter();
         t.printStackTrace(new java.io.PrintWriter(w));
         final String tr = w.toString();
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                exbox.setText(Config.version + ":" + Config.gitrev + "\n\n" + tr);
-                pack();
-                exbox.setCaretPosition(0);
-                setVisible(true);
-            }
-        });
+        exbox.setText(Config.version + "." + Config.gitrev + "\n\n" + tr);
+        pack();
+        exbox.setCaretPosition(0);
+        setVisible(true);
         return (true);
     }
-
-    public void done(final String ctype, final String info) {
-        done = false;
-
-        synchronized (this) {
-            try {
-                while (!done)
-                    wait();
-            } catch (InterruptedException e) {
-                throw (new Error(e));
-            }
-        }
-        errorsent();
-    }
-
-    public abstract void errorsent();
 }
