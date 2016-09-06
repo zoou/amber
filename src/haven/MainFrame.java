@@ -34,11 +34,13 @@ import com.jogamp.newt.event.*;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.AnimatorBase;
 import com.jogamp.opengl.util.FPSAnimator;
-//import com.jogamp.opengl.util.awt.Screenshot;
 import com.jogamp.opengl.*;
 
+import com.jogamp.opengl.util.GLPixelStorageModes;
+import com.jogamp.opengl.util.awt.ImageUtil;
 import haven.error.GLExceptionHandler;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -384,20 +386,37 @@ public class MainFrame implements GLEventListener, Console.Directory {
         ui.audio.cycle();
 
         if (needtotakescreenshot) {
-           // takescreenshot(glAutoDrawable.getWidth(), glAutoDrawable.getHeight());
+            takeScreenshot(glw.getWidth(), glw.getHeight());
             needtotakescreenshot = false;
         }
     }
 
-    private void takescreenshot(int width, int height) {
+    private void takeScreenshot(int width, int height) throws GLException {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+
+        GLContext glc = GLContext.getCurrent();
+        GL gl = glc.getGL();
+
+        GLPixelStorageModes psm = new GLPixelStorageModes();
+        psm.setPackAlignment(gl, 1);
+
+        gl.glReadPixels(0, 0, width, height, GL2ES3.GL_BGR,
+                GL.GL_UNSIGNED_BYTE,
+                ByteBuffer.wrap(((DataBufferByte) image.getRaster().getDataBuffer()).getData()));
+
+        psm.restore(gl);
+
+        if (glc.getGLDrawable().isGLOriented())
+            ImageUtil.flipImageVertically(image);
+
         try {
             String curtimestamp = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss.SSS").format(new Date());
             File outputfile = new File(String.format("screenshots/%s.jpg", curtimestamp));
             outputfile.getParentFile().mkdirs();
-           // Screenshot.writeToFile(outputfile, width, height);
+            ImageIO.write(image, "jpg", outputfile);
             ui.root.findchild(GameUI.class).msg(String.format("Screenshot has been saved as \"%s\"", outputfile.getName()), Color.WHITE);
-        } catch (Exception ex) {
-            System.out.println("Unable to take screenshot: " + ex.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
