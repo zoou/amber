@@ -1331,17 +1331,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Force hardware cursor (req. restart)") {
-            {
-                a = Config.hwcursor;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hwcursor", val);
-                Config.hwcursor = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Disable dropping items over water (overridable with Ctrl)") {
             {
                 a = Config.nodropping;
