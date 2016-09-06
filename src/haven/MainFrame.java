@@ -26,6 +26,9 @@
 
 package haven;
 
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.nativewindow.util.PixelFormat;
+import com.jogamp.nativewindow.util.PixelRectangle;
 import com.jogamp.newt.*;
 import com.jogamp.newt.event.*;
 import com.jogamp.newt.opengl.GLWindow;
@@ -36,9 +39,12 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.*;
 
 import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -58,7 +64,6 @@ public class MainFrame implements GLEventListener, Console.Directory {
     public MouseEvent mousemv;
     public static Queue<InputEvent> events = new LinkedList<>();
 
-    private String cursmode = "tex";
     private Resource lastcursor = null;
 
     private CPUProfile uprof = new CPUProfile(300), rprof = new CPUProfile(300);
@@ -549,20 +554,24 @@ public class MainFrame implements GLEventListener, Console.Directory {
         }
         ui.lasttip = tooltip;
         Resource curs = ui.root.getcurs(mousepos);
-        if (curs != null) {
-            if (cursmode == "awt") {
-                if (curs != lastcursor) {
-                    try {
-                        //setCursor(makeawtcurs(curs.layer(Resource.imgc).img, curs.layer(Resource.negc).cc));
-                        lastcursor = curs;
-                    } catch (Exception e) {
-                        cursmode = "tex";
-                    }
-                }
-            } else if (cursmode == "tex") {
-                Coord dc = mousepos.add(curs.layer(Resource.negc).cc.inv());
-                g.image(curs.layer(Resource.imgc), dc);
-            }
+        if (curs != null && curs != lastcursor) {
+            BufferedImage img = curs.layer(Resource.imgc).img;
+
+            int[] pixels = new int[img.getWidth() * img.getHeight()];
+            img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+            final IntBuffer pixelIntBuff = Buffers.newDirectIntBuffer(pixels);
+            final ByteBuffer pixelBuff = Buffers.copyIntBufferAsByteBuffer(pixelIntBuff);
+
+            PixelRectangle.GenericPixelRect pixelRect = new PixelRectangle.GenericPixelRect(
+                    PixelFormat.BGRA8888,
+                    new com.jogamp.nativewindow.util.Dimension(img.getWidth(), img.getHeight()),
+                    0,
+                    false,
+                    pixelBuff);
+
+            Display.PointerIcon picon = glw.getScreen().getDisplay().createPointerIcon(pixelRect, 0, 0);
+            glw.setPointerIcon(picon);
+            lastcursor = curs;
         }
         state.clean();
         GLObject.disposeall(state.cgl, gl);
