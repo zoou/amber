@@ -87,8 +87,7 @@ public class MainFrame implements GLEventListener, Console.Directory {
         } catch (Exception e) {
         }
 
-        // https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/newt/Window.html
-        System.setProperty("newt.glw.icons", "/haven/icon.png");
+        System.setProperty("newt.window.icons", "haven/icon.png,haven/icon.png");
 
         WebBrowser.self = DesktopBrowser.create();
     }
