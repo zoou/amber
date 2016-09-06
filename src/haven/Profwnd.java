@@ -62,7 +62,7 @@ public class Profwnd extends Window {
         g.image(tex, Coord.z);
     }
 
-    public boolean type(char k, java.awt.event.KeyEvent ev) {
+    public boolean type(char k, com.jogamp.newt.event.KeyEvent ev) {
         if (k == 'd') {
             prof.dump(System.err);
             return (true);

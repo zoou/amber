@@ -1,7 +1,7 @@
 package haven;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.net.URI;
 
 public class UpdateWnd extends Window {
@@ -27,7 +27,7 @@ public class UpdateWnd extends Window {
         };
         add(btn, new Coord((lbl.sz.x + 20) / 2 - btn.sz.x / 2, 80));
         pack();
-        this.c = new Coord(HavenPanel.w / 2 - sz.x / 2, HavenPanel.h / 2 - sz.y / 2);
+        this.c = new Coord(MainFrame.w / 2 - sz.x / 2, MainFrame.h / 2 - sz.y / 2);
     }
 
     @Override

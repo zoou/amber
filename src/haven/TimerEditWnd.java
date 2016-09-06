@@ -1,7 +1,7 @@
 package haven;
 
 
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.util.List;
 
 public class TimerEditWnd extends Window {
@@ -99,7 +99,7 @@ public class TimerEditWnd extends Window {
     }
 
     @Override
-    public boolean type(char key, java.awt.event.KeyEvent ev) {
+    public boolean type(char key, com.jogamp.newt.event.KeyEvent ev) {
         if (key == 27) {
             reqdestroy();
             return true;

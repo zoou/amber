@@ -66,7 +66,7 @@ public class GBuffer {
                 }
 
                 public void prep(Buffer buf) {
-                    buf.put(HavenPanel.global, this);
+                    buf.put(MainFrame.global, this);
                 }
             };
         /* XXX: This seems a bit unreliable. On Xorg with nvidia
@@ -124,7 +124,7 @@ public class GBuffer {
         this.ctx = ctx;
         this.sz = sz;
         buf = new GLFrameBuffer(new TexE(sz, GL.GL_RGBA, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE), null);
-        ostate = HavenPanel.OrthoState.fixed(new Coord(sz));
+        ostate = MainFrame.OrthoState.fixed(new Coord(sz));
     }
 
     private static Context defctx = null;

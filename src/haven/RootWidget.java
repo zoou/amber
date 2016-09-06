@@ -27,7 +27,7 @@
 package haven;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
     public static final Resource defcurs = Resource.local().loadwait("gfx/hud/curs/arw");

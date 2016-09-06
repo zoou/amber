@@ -33,7 +33,7 @@ import java.awt.Color;
 public abstract class States extends GLState {
     private States() {}
 
-    public static final Slot<ColState> color = new Slot<ColState>(Slot.Type.DRAW, ColState.class, HavenPanel.global);
+    public static final Slot<ColState> color = new Slot<ColState>(Slot.Type.DRAW, ColState.class, MainFrame.global);
     public static class ColState extends GLState {
         public final Color c;
         public final float[] ca;
@@ -376,7 +376,7 @@ public abstract class States extends GLState {
         }
     };
 
-    public static final Slot<GLState> pointsize = new Slot<GLState>(Slot.Type.GEOM, GLState.class, HavenPanel.global);
+    public static final Slot<GLState> pointsize = new Slot<GLState>(Slot.Type.GEOM, GLState.class, MainFrame.global);
     public static class PointSize extends GLState {
         private final float sz;
 

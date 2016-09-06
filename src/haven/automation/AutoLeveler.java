@@ -7,7 +7,7 @@ import haven.Label;
 import haven.Window;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;

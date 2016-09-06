@@ -99,7 +99,7 @@ public class AreaMine implements Runnable {
             if (terminate)
                 break mine;
 
-            GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
+            GameUI gui = MainFrame.ui.root.findchild(GameUI.class);
             try {
                 haven.automation.Utils.drinkTillFull(gui, 70, 84);
             } catch (InterruptedException e) {

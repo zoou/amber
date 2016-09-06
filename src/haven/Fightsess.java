@@ -26,9 +26,11 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.util.*;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
+
 
 public class Fightsess extends Widget {
     private static final Text.Foundry cdfndr = new Text.Foundry(Text.serif, 18).aa(true);
@@ -270,7 +272,7 @@ public class Fightsess extends Widget {
 
         if((key == 0) && (c >= KeyEvent.VK_1) && (c < KeyEvent.VK_1 + actions.length)) {
             int n = c - KeyEvent.VK_1;
-            if ((ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
+            if (ev.isControlDown())
                 wdgmsg("drop", n);
             else
                 wdgmsg("use", n);

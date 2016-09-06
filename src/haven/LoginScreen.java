@@ -26,8 +26,10 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.awt.*;
-import java.awt.event.KeyEvent;
+
 
 public class LoginScreen extends Widget {
     Login cur;
@@ -103,7 +105,7 @@ public class LoginScreen extends Widget {
         }
 
         public boolean globtype(char k, KeyEvent ev) {
-            if ((k == 'r') && ((ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0)) {
+            if ((k == 'r') && ((ev.getModifiers() & (KeyEvent.META_MASK | KeyEvent.ALT_MASK)) != 0)) {
                 return (true);
             }
             return (false);
@@ -143,7 +145,7 @@ public class LoginScreen extends Widget {
         }
 
         public boolean globtype(char k, KeyEvent ev) {
-            if ((k == 'f') && ((ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0)) {
+            if ((k == 'f') && ((ev.getModifiers() & (KeyEvent.META_MASK | KeyEvent.ALT_MASK)) != 0)) {
                 LoginScreen.this.wdgmsg("forget");
                 return (true);
             }
@@ -321,7 +323,7 @@ public class LoginScreen extends Widget {
     }
 
     public boolean type(char k, KeyEvent ev) {
-        if (k == 10) {
+        if (k == KeyEvent.VK_ENTER) {
             if ((cur != null) && cur.enter())
                 wdgmsg("login", cur.data());
             return (true);

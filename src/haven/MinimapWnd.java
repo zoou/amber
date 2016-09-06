@@ -1,6 +1,6 @@
 package haven;
 
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class MinimapWnd extends Widget {

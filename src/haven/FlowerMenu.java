@@ -247,11 +247,11 @@ public class FlowerMenu extends Widget {
         super.draw(g, false);
     }
 
-    public boolean keydown(java.awt.event.KeyEvent ev) {
+    public boolean keydown(com.jogamp.newt.event.KeyEvent ev) {
         return (true);
     }
 
-    public boolean type(char key, java.awt.event.KeyEvent ev) {
+    public boolean type(char key, com.jogamp.newt.event.KeyEvent ev) {
         if (Config.userazerty)
             key = Utils.azerty2qwerty(key);
 

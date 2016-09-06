@@ -1,6 +1,7 @@
 package haven;
 
-import java.awt.event.KeyEvent;
+
+import com.jogamp.newt.event.KeyEvent;
 
 import static haven.Inventory.invsq;
 

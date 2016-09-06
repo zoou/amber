@@ -48,7 +48,7 @@ public class FBView {
     public FBView(GLFrameBuffer fbo, GLState basic) {
         this.fbo = fbo;
         this.basicstate = basic;
-        ostate = HavenPanel.OrthoState.fixed(fbo.sz());
+        ostate = MainFrame.OrthoState.fixed(fbo.sz());
     }
 
     protected GLState.Buffer basic(GOut g) {

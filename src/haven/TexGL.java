@@ -46,6 +46,7 @@ public abstract class TexGL extends Tex {
     private final Object idmon = new Object();
     private WeakList.Entry<TexGL> actref;
     private boolean setparams = true;
+    private static final GLState.Slot<GLState> global = new GLState.Slot<>(GLState.Slot.Type.SYS, GLState.class);
 
     public static class TexOb extends GLObject implements BGL.ID {
         private int id;
@@ -90,7 +91,7 @@ public abstract class TexGL extends Tex {
     }
 
     public static class TexDraw extends GLState {
-        public static final Slot<TexDraw> slot = new Slot<TexDraw>(Slot.Type.DRAW, TexDraw.class, HavenPanel.global);
+        public static final Slot<TexDraw> slot = new Slot<TexDraw>(Slot.Type.DRAW, TexDraw.class, global);
         private static final ShaderMacro[] nshaders = {Tex2D.mod};
         private static final ShaderMacro[] cshaders = {Tex2D.mod, mkcentroid};
         public final TexGL tex;
@@ -163,7 +164,7 @@ public abstract class TexGL extends Tex {
     }
 
     public static class TexClip extends GLState {
-        public static final Slot<TexClip> slot = new Slot<TexClip>(Slot.Type.GEOM, TexClip.class, HavenPanel.global, TexDraw.slot);
+        public static final Slot<TexClip> slot = new Slot<TexClip>(Slot.Type.GEOM, TexClip.class, global, TexDraw.slot);
         private static final ShaderMacro[] shaders = {Tex2D.clip};
         public final TexGL tex;
         private TexUnit sampler;

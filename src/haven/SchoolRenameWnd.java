@@ -3,7 +3,7 @@ package haven;
 
 import org.json.JSONObject;
 
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 

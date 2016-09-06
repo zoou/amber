@@ -26,8 +26,10 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.util.*;
-import java.awt.event.KeyEvent;
+
 
 public abstract class ConsoleHost extends Widget {
     public static Text.Foundry cmdfoundry = new Text.Foundry(Text.mono, 12, new java.awt.Color(245, 222, 179));

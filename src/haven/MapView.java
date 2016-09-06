@@ -26,6 +26,7 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
 import haven.GLProgram.VarID;
 import haven.automation.AutoLeveler;
 import haven.automation.GobSelectCallback;
@@ -35,7 +36,6 @@ import haven.resutil.BPRadSprite;
 
 import javax.media.opengl.GL;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.lang.ref.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

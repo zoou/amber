@@ -26,6 +26,8 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.util.*;
 
 public class Charlist extends Widget {
@@ -140,7 +142,7 @@ public class Charlist extends Widget {
         }
     }
 
-    public boolean keydown(java.awt.event.KeyEvent ev) {
+    public boolean keydown(KeyEvent ev) {
         if (ev.getKeyCode() == ev.VK_UP) {
             sel = Math.max(sel - 1, 0);
             return (true);

@@ -138,7 +138,7 @@ public class TestView extends PView {
         return (true);
     }
 
-    public boolean type(char key, java.awt.event.KeyEvent ev) {
+    public boolean type(char key, com.jogamp.newt.event.KeyEvent ev) {
         if (key == ' ') {
             sel = -1;
             return (true);

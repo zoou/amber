@@ -26,11 +26,11 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.*;
 import java.net.URL;

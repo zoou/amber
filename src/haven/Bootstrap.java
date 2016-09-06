@@ -144,13 +144,19 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                         }
                     }
                 }
+
                 ui.uimsg(1, "prg", "Authenticating...");
+
                 try {
                     AuthClient auth = new AuthClient(authserver, authport);
+
                     try {
                         try {
                             acctname = creds.tryauth(auth);
                         } catch (AuthClient.Credentials.AuthException e) {
+
+                            System.out.println("boot error: " + e);
+
                             ui.uimsg(1, "error", e.getMessage());
                             continue retry;
                         }

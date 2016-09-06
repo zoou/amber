@@ -44,7 +44,7 @@ public interface Rendered extends Drawn {
         public int compare(T a, T b, GLState.Buffer sa, GLState.Buffer sb);
     }
 
-    public static final GLState.Slot<Order> order = new GLState.Slot<Order>(GLState.Slot.Type.GEOM, Order.class, HavenPanel.global);
+    public static final GLState.Slot<Order> order = new GLState.Slot<Order>(GLState.Slot.Type.GEOM, Order.class, MainFrame.global);
     public static abstract class Order<T extends Rendered> extends GLState {
         public abstract int mainz();
         public abstract RComparator<? super T> cmp();
@@ -116,7 +116,7 @@ public interface Rendered extends Drawn {
     public final static Order eyesort = new EyeOrder(10000);
     public final static Order eeyesort = new EyeOrder(4500);
 
-    public final static GLState.StandAlone skip = new GLState.StandAlone(GLState.Slot.Type.GEOM, HavenPanel.global) {
+    public final static GLState.StandAlone skip = new GLState.StandAlone(GLState.Slot.Type.GEOM, MainFrame.global) {
         public void apply(GOut g) {}
         public void unapply(GOut g) {}
     };

@@ -26,12 +26,13 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
 import java.awt.image.BufferedImage;
@@ -1310,7 +1311,7 @@ public class ChatUI extends Widget {
     }
 
     public boolean keydown(KeyEvent ev) {
-        boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
+        boolean M = ev.isAltDown() || ev.isMetaDown();
         if (qline != null) {
             if (M && (ev.getKeyCode() == KeyEvent.VK_UP)) {
                 Channel prev = this.sel;
@@ -1361,7 +1362,7 @@ public class ChatUI extends Widget {
     }
 
     public boolean globtype(char key, KeyEvent ev) {
-        if (key == 10) {
+        if (key == KeyEvent.VK_ENTER) {
             if (!visible && (sel instanceof EntryChannel)) {
                 qgrab = ui.grabkeys(this);
                 qline = new QuickLine((EntryChannel) sel);

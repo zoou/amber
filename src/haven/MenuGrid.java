@@ -27,7 +27,7 @@
 package haven;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 
 import haven.automation.*;

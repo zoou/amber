@@ -6,7 +6,7 @@ import haven.Label;
 import haven.Window;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 

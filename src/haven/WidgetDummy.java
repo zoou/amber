@@ -28,12 +28,12 @@ public class WidgetDummy extends Widget {
     }
 
     @Override
-    public boolean keydown(java.awt.event.KeyEvent ev) {
+    public boolean keydown(com.jogamp.newt.event.KeyEvent ev) {
         return false;
     }
 
     @Override
-    public boolean type(char key, java.awt.event.KeyEvent ev) {
+    public boolean type(char key, com.jogamp.newt.event.KeyEvent ev) {
         return false;
     }
 }

@@ -66,7 +66,7 @@ public class OptWnd extends Window {
             chpanel(tgt);
         }
 
-        public boolean type(char key, java.awt.event.KeyEvent ev) {
+        public boolean type(char key, com.jogamp.newt.event.KeyEvent ev) {
             if ((this.key != -1) && (key == this.key)) {
                 click();
                 return (true);

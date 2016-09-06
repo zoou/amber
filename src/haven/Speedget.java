@@ -26,7 +26,7 @@
 
 package haven;
 
-import java.awt.event.KeyEvent;
+import com.jogamp.newt.event.KeyEvent;
 
 public class Speedget extends Widget {
     public static final Tex imgs[][];
@@ -126,7 +126,7 @@ public class Speedget extends Widget {
         if (key == 18) {
             if (max >= 0) {
                 int n;
-                if ((ev.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) == 0) {
+                if (ev.isShiftDown()) {
                     if (cur > max)
                         n = 0;
                     else

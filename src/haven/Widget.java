@@ -26,11 +26,13 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.util.*;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+
 
 public class Widget {
     public UI ui;
@@ -743,7 +745,7 @@ public class Widget {
 
     public boolean type(char key, KeyEvent ev) {
         if (canactivate) {
-            if (key == 10) {
+            if (key == KeyEvent.VK_ENTER) {
                 wdgmsg("activate");
                 return (true);
             }

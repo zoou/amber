@@ -1,6 +1,8 @@
 package haven;
 
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.awt.*;
 import java.util.List;
 
@@ -165,7 +167,7 @@ public class TimerWdg extends Widget {
         }
 
         @Override
-        public boolean type(char key, java.awt.event.KeyEvent ev) {
+        public boolean type(char key, KeyEvent ev) {
             if (key == 27) {
                 reqdestroy();
                 return true;

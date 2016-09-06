@@ -36,7 +36,7 @@ import javax.media.opengl.*;
 public abstract class PView extends Widget {
     public RenderList rls;
     public static final GLState.Slot<RenderContext> ctx = new GLState.Slot<RenderContext>(GLState.Slot.Type.SYS, RenderContext.class);
-    public static final GLState.Slot<RenderState> wnd = new GLState.Slot<RenderState>(GLState.Slot.Type.SYS, RenderState.class, HavenPanel.proj2d, GLFrameBuffer.slot);
+    public static final GLState.Slot<RenderState> wnd = new GLState.Slot<RenderState>(GLState.Slot.Type.SYS, RenderState.class, MainFrame.proj2d, GLFrameBuffer.slot);
     public static final GLState.Slot<Projection> proj = new GLState.Slot<Projection>(GLState.Slot.Type.SYS, Projection.class, wnd);
     public static final GLState.Slot<Camera> cam = new GLState.Slot<Camera>(GLState.Slot.Type.SYS, Camera.class, proj);
     public static final GLState.Slot<Location.Chain> loc = new GLState.Slot<Location.Chain>(GLState.Slot.Type.GEOM, Location.Chain.class, cam).instanced(Location.Chain.instancer);
@@ -236,7 +236,7 @@ public abstract class PView extends Widget {
             GOut rg;
             if (cstate.cur.fb != null) {
                 GLState.Buffer gb = g.basicstate();
-                HavenPanel.OrthoState.fixed(cstate.cur.fb.sz()).prep(gb);
+                MainFrame.OrthoState.fixed(cstate.cur.fb.sz()).prep(gb);
                 cstate.cur.fb.prep(gb);
                 cstate.cur.fb.prep(def);
                 rg = new GOut(g.gl, g.curgl, g.gc, g.st, gb, cstate.cur.fb.sz());

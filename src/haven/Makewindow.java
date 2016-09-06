@@ -313,7 +313,7 @@ public class Makewindow extends Widget {
         super.wdgmsg(sender, msg, args);
     }
 
-    public boolean globtype(char ch, java.awt.event.KeyEvent ev) {
+    public boolean globtype(char ch, com.jogamp.newt.event.KeyEvent ev) {
         if (ch == '\n') {
             wdgmsg("make", ui.modctrl ? 1 : 0);
             return (true);

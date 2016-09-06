@@ -26,8 +26,9 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+
 import java.util.*;
-import java.awt.event.*;
 import java.awt.datatransfer.*;
 
 public class LineEdit {
@@ -74,7 +75,7 @@ public class LineEdit {
                 int b = wordstart(point);
                 line = line.substring(0, b) + line.substring(point);
                 point = b;
-            } else if (c == 10) {
+            } else if (c == KeyEvent.VK_ENTER) {
                 done(line);
             } else if ((c == 127) && (mod == 0)) {
                 if (point < line.length())
@@ -200,7 +201,7 @@ public class LineEdit {
                     kill(line.substring(b, point));
                 line = line.substring(0, b) + line.substring(point);
                 point = b;
-            } else if (c == 10) {
+            } else if (c == KeyEvent.VK_ENTER) {
                 done(line);
             } else if ((c == 'd') && (mod == C)) {
                 mode("erase");
@@ -342,9 +343,9 @@ public class LineEdit {
 
     public boolean key(KeyEvent ev) {
         int mod = 0;
-        if ((ev.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) mod |= C;
-        if ((ev.getModifiersEx() & (InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0) mod |= M;
-        if (ev.getID() == KeyEvent.KEY_TYPED) {
+        if (ev.isControlDown()) mod |= C;
+        if (ev.isAltDown() || ev.isMetaDown()) mod |= M;
+        if (ev.getEventType() == KeyEvent.EVENT_KEY_RELEASED) {
             char c = ev.getKeyChar();
             if (((mod & C) != 0) && (c < 32)) {
         /* Undo Java's TTY Control-code mangling */
@@ -353,15 +354,15 @@ public class LineEdit {
                 } else if (ev.getKeyCode() == KeyEvent.VK_TAB) {
                 } else if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 } else {
-                    if ((ev.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+                    if (ev.isShiftDown())
                         c = (char) (c + 'A' - 1);
                     else
                         c = (char) (c + 'a' - 1);
                 }
             }
             return (key(c, ev.getKeyCode(), mod));
-        } else if (ev.getID() == KeyEvent.KEY_PRESSED) {
-            if (ev.getKeyChar() == KeyEvent.CHAR_UNDEFINED)
+        } else if (ev.getEventType() == KeyEvent.EVENT_KEY_PRESSED) {
+            if (ev.getKeyChar() == KeyEvent.VK_UNDEFINED)
                 return (key('\0', ev.getKeyCode(), mod));
         }
         return (false);

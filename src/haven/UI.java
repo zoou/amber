@@ -26,10 +26,12 @@
 
 package haven;
 
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.MouseEvent;
+
+import com.jogamp.newt.event.InputEvent;
 import java.util.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.InputEvent;
+
 
 public class UI {
     public RootWidget root;
@@ -39,7 +41,7 @@ public class UI {
     Receiver rcvr;
     public Coord mc = Coord.z, lcc = Coord.z;
     public Session sess;
-    public boolean modshift, modctrl, modmeta, modsuper;
+    public boolean modshift, modctrl, modmeta;
     public int keycode;
     public Object lasttip;
     long lastevent, lasttick;
@@ -289,13 +291,10 @@ public class UI {
     }
 
     private void setmods(InputEvent ev) {
-        int mod = ev.getModifiersEx();
-        Debug.kf1 = modshift = (mod & InputEvent.SHIFT_DOWN_MASK) != 0;
-        Debug.kf2 = modctrl = (mod & InputEvent.CTRL_DOWN_MASK) != 0;
-        Debug.kf3 = modmeta = (mod & (InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0;
-    /*
-    Debug.kf4 = modsuper = (mod & InputEvent.SUPER_DOWN_MASK) != 0;
-	*/
+        int mod = ev.getModifiers();
+        Debug.kf1 = modshift = (mod & InputEvent.SHIFT_MASK) != 0;
+        Debug.kf2 = modctrl = (mod & InputEvent.CTRL_MASK) != 0;
+        Debug.kf3 = modmeta = (mod & (InputEvent.META_MASK | InputEvent.ALT_MASK)) != 0;
     }
 
     private Grab[] c(Collection<Grab> g) {
@@ -391,8 +390,7 @@ public class UI {
     public int modflags() {
         return ((modshift ? 1 : 0) |
                 (modctrl ? 2 : 0) |
-                (modmeta ? 4 : 0) |
-                (modsuper ? 8 : 0));
+                (modmeta ? 4 : 0));
     }
 
     public void destroy() {
