@@ -154,9 +154,6 @@ public class Bootstrap implements UI.Receiver, UI.Runner {
                         try {
                             acctname = creds.tryauth(auth);
                         } catch (AuthClient.Credentials.AuthException e) {
-
-                            System.out.println("boot error: " + e);
-
                             ui.uimsg(1, "error", e.getMessage());
                             continue retry;
                         }

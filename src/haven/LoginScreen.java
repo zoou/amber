@@ -27,6 +27,7 @@
 package haven;
 
 import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.WindowEvent;
 
 import java.awt.*;
 
@@ -35,7 +36,7 @@ public class LoginScreen extends Widget {
     Login cur;
     Text error;
     IButton btn;
-    Button optbtn;
+    Button optbtn, exitbtn;
     OptWnd opts;
     static Text.Foundry textf, textfs;
     static Tex bg = Resource.loadtex("gfx/loginscr");
@@ -56,6 +57,7 @@ public class LoginScreen extends Widget {
         this.add(ll);
         ll.show();
         ll.raise();
+        exitbtn = adda(new Button(90, "Exit"), 419, 570, 0.5, 0.5);
         GameUI.swimon = false;
         GameUI.trackon = false;
         GameUI.crimeon = false;
@@ -221,7 +223,7 @@ public class LoginScreen extends Widget {
                 protected void unpress() {
                     Audio.play(Button.lbtup.stream());
                 }
-            }, 419, 510, 0.5, 0.5);
+            }, 419, 480, 0.5, 0.5);
             progress(null);
         }
     }
@@ -271,6 +273,9 @@ public class LoginScreen extends Widget {
                 opts.reqdestroy();
                 opts = null;
             }
+            return;
+        } else if (sender == exitbtn) {
+            MainFrame.glw.sendWindowEvent(WindowEvent.EVENT_WINDOW_DESTROY_NOTIFY);
             return;
         } else if (sender == opts) {
             opts.reqdestroy();

@@ -165,6 +165,7 @@ public class Config {
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static boolean donotaggrofriends =  Utils.getprefb("donotaggrofriends", false);
     public static int avgmode = Utils.getprefi("avgmode", 0);
+    public static boolean fullscreen = Utils.getprefb("fullscreen", false);
     private final static Map<String, Integer> defFontSzGlobal =  new HashMap<String, Integer>(3) {{
         put("zh", 16);
         put("en", 11);

@@ -27,11 +27,13 @@
 package haven;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.nativewindow.util.DimensionImmutable;
 import com.jogamp.nativewindow.util.PixelFormat;
 import com.jogamp.nativewindow.util.PixelRectangle;
 import com.jogamp.newt.*;
 import com.jogamp.newt.event.*;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.newt.util.MonitorModeUtil;
 import com.jogamp.opengl.util.AnimatorBase;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.*;
@@ -50,38 +52,33 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 
 public class MainFrame implements GLEventListener, Console.Directory {
     private static final String TITLE = "Haven and Hearth (Amber v" + Config.version + ")";
-
     public static final GLState.Slot<GLState> global = new GLState.Slot<>(GLState.Slot.Type.SYS, GLState.class);
     public static final GLState.Slot<GLState> proj2d = new GLState.Slot<>(GLState.Slot.Type.SYS, GLState.class, global);
-
     public static UI ui;
     public static int w, h;
     private static int hz = 60;
     private static int bghz = Utils.getprefi("bghz", 60);
     private long drwt, bglt;
-
     public MouseEvent mousemv;
     public static Queue<InputEvent> events = new LinkedList<>();
-
     private Resource lastcursor = null;
-
     private CPUProfile uprof = new CPUProfile(300), rprof = new CPUProfile(300);
     private GPUProfile gprof = new GPUProfile(300);
-
     private GLState gstate, ostate;
     private GLState.Applier state = null;
     private GLConfig glconf = null;
     public static boolean needtotakescreenshot;
     private static BufferBGL buffer = null;
     private static AnimatorBase animator;
-    private GLWindow glw;
+    public static GLWindow glw;
     private static GLCapabilities caps;
     public static Coord mousepos = new Coord(0, 0);
-
+    public static List<MonitorMode> monitorModes;
 
     static {
         try {
@@ -216,7 +213,8 @@ public class MainFrame implements GLEventListener, Console.Directory {
                 new Thread() {
                     @Override
                     public void run() {
-                        animator.stop();
+                        if (animator.isStarted())
+                            animator.stop();
                         System.exit(0);
                     }
                 }.start();
@@ -237,11 +235,42 @@ public class MainFrame implements GLEventListener, Console.Directory {
         glw.addMouseListener(mouseAdapter);
         glw.addKeyListener(keyAdapter);
         glw.addGLEventListener(mainframe);
-        glw.setSize(w, h);
+        if (!Config.fullscreen)
+            glw.setSize(w, h);
         glw.setTitle(TITLE);
         animator.start();
         animator.setUncaughtExceptionHandler(new GLExceptionHandler());
         glw.setVisible(true);
+
+        MonitorDevice monitor = glw.getMainMonitor();
+        MonitorMode mmCurrent = monitor.queryCurrentMode();
+        monitorModes = monitor.getSupportedModes();
+        monitorModes = MonitorModeUtil.filterByFlags(monitorModes, 0);  // no interlace, double-scan etc
+        monitorModes = MonitorModeUtil.filterByRotation(monitorModes,  mmCurrent.getRotation());
+        monitorModes = MonitorModeUtil.filterByRate(monitorModes, mmCurrent.getRefreshRate());
+        monitorModes = MonitorModeUtil.getHighestAvailableBpp(monitorModes);
+
+        if (Config.fullscreen)
+            goFullscreen();
+    }
+
+    public static void goFullscreen() {
+        MonitorDevice monitor = glw.getMainMonitor();
+        MonitorMode defMode = monitorModes.get(0);
+
+        DimensionImmutable defres = defMode.getSurfaceSize().getResolution();
+        Coord selres = Utils.getprefc("fullscreen_res", new Coord(defres.getWidth(), defres.getHeight()));
+
+        MonitorMode mode = defMode;
+        for (MonitorMode m : monitorModes) {
+            DimensionImmutable res = m.getSurfaceSize().getResolution();
+            if (res.getWidth() == selres.x && res.getHeight() == selres.y) {
+                mode = m;
+                break;
+            }
+        }
+        monitor.setCurrentMode(mode);
+        glw.setFullscreen(true);
     }
 
     public static void setupres() {
