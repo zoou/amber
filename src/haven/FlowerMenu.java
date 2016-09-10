@@ -103,6 +103,7 @@ public class FlowerMenu extends Widget {
             Petal harvest = null;
             Petal eat = null;
             Petal split = null;
+            Petal slice = null;
             for (Petal p : opts) {
                 p.move(p.ta + ((1 - s) * PI), p.tr * s);
                 p.a = s;
@@ -114,6 +115,8 @@ public class FlowerMenu extends Widget {
                     eat = p;
                 else if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Split")))
                     split = p;
+                else if (p.name.equals(Resource.getLocString(Resource.BUNDLE_FLOWER, "Slice up")))
+                    slice = p;
             }
             if (Config.autopick && pick != null && s == 1.0)
                 choose(pick);
@@ -123,6 +126,8 @@ public class FlowerMenu extends Widget {
                 choose(eat);
             else if (Config.autosplit && split != null && s == 1.0)
                 choose(split);
+            else if (Config.autoslice && slice != null && s == 1.0)
+                choose(slice); 
         }
     }
 
@@ -252,8 +257,8 @@ public class FlowerMenu extends Widget {
     }
 
     public boolean type(char key, java.awt.event.KeyEvent ev) {
-        if (Config.userazerty)
-            key = Utils.azerty2qwerty(key);
+        //if (Config.userazerty)
+            //key = Utils.azerty2qwerty(key);
 
         if ((key >= '0') && (key <= '9')) {
             int opt = (key == '0') ? 10 : (key - '1');

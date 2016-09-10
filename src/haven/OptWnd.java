@@ -1082,6 +1082,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Automatically select 'Slice up' action") {
+            {
+                a = Config.autoslice;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoslice", val);
+                Config.autoslice = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Automatically select 'Split' action") {
             {
                 a = Config.autosplit;
